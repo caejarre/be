@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diário do Be</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Karla:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  /* ---------- tokens ---------- */
+  :root{
+    --paper: #FAF3E5;
+    --paper-line: rgba(31,59,47,0.14);
+    --ink: #263A38;
+    --forest: #4F7965;
+    --forest-dark: #1F3B2F;
+    --gold: #D8A34D;
+    --gold-dark: #B37F2E;
+    --blush: #E8AFA3;
+    --radius: 18px;
+    --shadow: 0 6px 20px rgba(31,59,47,0.10);
+    font-size: 16px;
+  }
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Karla', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  h1,h2,h3{ font-family:'Fraunces', serif; margin:0; }
+  button{ font-family: inherit; cursor:pointer; }
+  input, textarea, select{ font-family: inherit; }
+  .mono{ font-family:'Space Mono', monospace; letter-spacing: 0.03em; }
+  ::selection{ background: var(--gold); color: var(--forest-dark); }
+
+  /* focus visibility */
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{
+    outline: 2px solid var(--forest); outline-offset: 2px;
+  }
+
+  /* ---------- lock screen ---------- */
+  #lock-screen{
+    position: fixed; inset:0;
+    background: var(--forest-dark);
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column;
+    padding: 24px;
+    z-index: 50;
+  }
+  .lock-card{
+    background: var(--paper);
+    border-radius: var(--radius);
+    padding: 40px 32px;
+    max-width: 360px;
+    width: 100%;
+    text-align:center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  }
+  .lock-stamp{
+    width: 64px; height:64px; margin: 0 auto 18px;
+    border-radius: 50%;
+    border: 2px dashed var(--gold-dark);
+    display:flex; align-items:center; justify-content:center;
+    font-size: 30px;
+    background: rgba(216,163,77,0.12);
+  }
+  .lock-card h1{ font-size: 1.6rem; font-style: italic; color: var(--forest-dark); }
+  .lock-card p{ margin: 8px 0 22px; color: rgba(38,58,56,0.7); font-size: 0.92rem; }
+  .pin-boxes{ display:flex; gap:10px; justify-content:center; margin-bottom: 16px; }
+  .pin-boxes input{
+    width: 46px; height: 56px;
+    text-align:center;
+    font-size: 1.5rem;
+    border: 2px solid var(--paper-line);
+    border-radius: 10px;
+    background: white;
+    color: var(--forest-dark);
+  }
+  .pin-boxes input:focus{ border-color: var(--forest); outline:none; }
+  .lock-error{
+    color: #B5473A; font-size: 0.85rem; min-height: 18px; margin-bottom: 10px;
+  }
+  .shake{ animation: shake 0.4s; }
+  @keyframes shake{
+    0%,100%{ transform: translateX(0); }
+    20%{ transform: translateX(-8px); }
+    40%{ transform: translateX(8px); }
+    60%{ transform: translateX(-6px); }
+    80%{ transform: translateX(6px); }
+  }
+  .btn{
+    border: none; border-radius: 999px;
+    padding: 12px 22px;
+    font-weight: 700; font-size: 0.95rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn:hover{ transform: translateY(-1px); }
+  .btn-primary{ background: var(--forest); color: var(--paper); }
+  .btn-primary:hover{ box-shadow: 0 8px 18px rgba(79,121,101,0.35); }
+  .btn-gold{ background: var(--gold); color: var(--forest-dark); }
+  .btn-gold:hover{ box-shadow: 0 8px 18px rgba(216,163,77,0.4); }
+  .btn-ghost{ background: transparent; color: var(--forest-dark); border: 1.5px solid var(--paper-line); }
+  .btn-block{ width:100%; }
+
+  /* ---------- app shell ---------- */
+  #app{ display:none; min-height:100vh; }
+  header.hero{
+    background: var(--forest-dark);
+    color: var(--paper);
+    padding: 34px 20px 46px;
+    position: relative;
+    overflow:hidden;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute; right:-40px; top:-40px;
+    width:180px; height:180px; border-radius:50%;
+    border:2px dashed rgba(250,243,229,0.18);
+  }
+  .hero-inner{ max-width: 760px; margin:0 auto; position:relative; z-index:1; }
+  .eyebrow{ font-size:0.75rem; text-transform:uppercase; letter-spacing:0.12em; color: var(--gold); }
+  header.hero h1{ font-size: 2.1rem; font-style: italic; margin-top:6px; }
+  header.hero .sub{ color: rgba(250,243,229,0.75); margin-top:8px; font-size:0.95rem; max-width: 420px; }
+  .stat-row{ display:flex; gap:18px; margin-top:22px; flex-wrap:wrap; }
+  .stat{
+    background: rgba(250,243,229,0.08);
+    border: 1px solid rgba(250,243,229,0.16);
+    border-radius: 14px;
+    padding: 10px 16px;
+  }
+  .stat .num{ font-family:'Space Mono', monospace; font-size:1.3rem; color: var(--gold); }
+  .stat .lbl{ font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color: rgba(250,243,229,0.65); }
+
+  main{ max-width: 760px; margin: -26px auto 60px; padding: 0 20px; position:relative; z-index:2; }
+  .toolbar{ display:flex; justify-content:flex-end; margin-bottom: 24px; }
+
+  #setup-banner{
+    display:none;
+    background: white; border: 1.5px dashed var(--gold-dark);
+    border-radius: var(--radius); padding: 20px; margin-bottom:24px;
+    font-size:0.9rem; line-height:1.5;
+  }
+  #setup-banner h3{ font-size:1.05rem; color: var(--forest-dark); margin-bottom:8px; }
+  #setup-banner code{ background: var(--paper); padding:2px 6px; border-radius:6px; }
+
+  #empty-state{
+    display:none;
+    text-align:center; padding: 60px 20px;
+    color: rgba(38,58,56,0.6);
+  }
+  #empty-state .lock-stamp{ margin-bottom: 14px; }
+  #empty-state h3{ color: var(--forest-dark); font-size:1.2rem; margin-bottom:6px; }
+
+  /* ---------- timeline / cards ---------- */
+  #timeline{ display:flex; flex-direction:column; gap:22px; }
+  .entry-card{
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 22px 22px 20px;
+    position: relative;
+    animation: fadein 0.35s ease both;
+  }
+  @keyframes fadein{ from{opacity:0; transform: translateY(8px);} to{opacity:1; transform:none;} }
+
+  .entry-top{ display:flex; align-items:flex-start; gap:14px; }
+  .stamp-badge{
+    flex: 0 0 auto;
+    width: 54px; height:54px; border-radius:50%;
+    border: 2px dashed var(--gold-dark);
+    background: rgba(216,163,77,0.14);
+    display:flex; align-items:center; justify-content:center;
+    font-size:24px;
+  }
+  .entry-meta{ flex:1; min-width:0; }
+  .entry-date{ font-size:0.75rem; color: var(--forest); text-transform:uppercase; letter-spacing:0.06em; }
+  .entry-title{ font-size:1.2rem; margin-top:2px; }
+  .entry-author{
+    display:inline-block; margin-top:6px;
+    font-size:0.7rem; text-transform:uppercase; letter-spacing:0.06em;
+    background: var(--paper); border-radius:999px; padding:3px 10px;
+    color: var(--forest-dark);
+  }
+  .entry-note{ margin-top:14px; font-size:0.95rem; line-height:1.55; color: rgba(38,58,56,0.88); white-space:pre-wrap; }
+
+  .photo-row{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+  .photo-thumb{
+    width: 84px; height:84px; object-fit:cover;
+    border-radius:10px; border:4px solid white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transform: rotate(-2deg);
+    cursor:pointer;
+    transition: transform 0.15s ease;
+  }
+  .photo-thumb:nth-child(even){ transform: rotate(2deg); }
+  .photo-thumb:hover{ transform: scale(1.05); }
+
+  .entry-actions{ position:absolute; top:16px; right:16px; }
+  .icon-btn{
+    background:none; border:none; color: rgba(38,58,56,0.4);
+    font-size:0.85rem; padding:4px 8px; border-radius:8px;
+  }
+  .icon-btn:hover{ color:#B5473A; background: rgba(181,71,58,0.08); }
+  .confirm-row{ display:flex; gap:6px; align-items:center; }
+  .confirm-row span{ font-size:0.78rem; color:#B5473A; }
+
+  /* ---------- FAB / add button ---------- */
+  #fab{
+    position: sticky; bottom:20px; float:right;
+    display:flex; align-items:center; gap:8px;
+    padding: 14px 22px;
+    box-shadow: 0 10px 24px rgba(216,163,77,0.45);
+  }
+
+  /* ---------- modal ---------- */
+  .modal-overlay{
+    display:none;
+    position: fixed; inset:0; background: rgba(31,59,47,0.55);
+    align-items:flex-end; justify-content:center;
+    z-index: 40; padding: 0;
+  }
+  .modal{
+    background: var(--paper);
+    width:100%; max-width: 560px;
+    max-height: 92vh; overflow-y:auto;
+    border-radius: 22px 22px 0 0;
+    padding: 26px 22px 32px;
+    animation: slideup 0.25s ease;
+  }
+  @media (min-width: 620px){
+    .modal-overlay{ align-items:center; }
+    .modal{ border-radius: 22px; margin: 20px; }
+  }
+  @keyframes slideup{ from{ transform: translateY(30px); opacity:0; } to{ transform:none; opacity:1; } }
+  .modal h2{ font-size:1.4rem; font-style:italic; color: var(--forest-dark); margin-bottom:18px; }
+  .field{ margin-bottom:18px; }
+  .field label{ display:block; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.06em; color: var(--forest-dark); margin-bottom:6px; }
+  .field input[type=text], .field input[type=date], .field textarea{
+    width:100%; padding: 11px 13px; border-radius:12px;
+    border: 1.5px solid var(--paper-line); background:white; color:var(--ink);
+    font-size:0.95rem;
+  }
+  .field textarea{ min-height: 90px; resize:vertical; }
+  .field input:focus, .field textarea:focus{ border-color: var(--forest); outline:none; }
+
+  .badge-grid{ display:flex; flex-wrap:wrap; gap:8px; }
+  .badge-chip{
+    border: 1.5px solid var(--paper-line);
+    background:white;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    display:flex; align-items:center; gap:6px;
+  }
+  .badge-chip.selected{ border-color: var(--gold-dark); background: rgba(216,163,77,0.16); }
+
+  .file-drop{
+    border: 1.5px dashed var(--paper-line);
+    border-radius: 14px; padding: 16px; text-align:center;
+    font-size:0.85rem; color: rgba(38,58,56,0.65);
+    background: white;
+  }
+  .file-drop input{ display:none; }
+  .preview-row{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .preview-item{ position:relative; }
+  .preview-item img{ width:64px; height:64px; object-fit:cover; border-radius:10px; }
+  .preview-item button{
+    position:absolute; top:-6px; right:-6px;
+    width:20px; height:20px; border-radius:50%;
+    background: #B5473A; color:white; border:none; font-size:0.7rem; line-height:1;
+  }
+
+  .modal-actions{ display:flex; gap:10px; margin-top:8px; }
+  .modal-actions .btn{ flex:1; }
+
+  /* ---------- lightbox ---------- */
+  #lightbox{
+    display:none; position:fixed; inset:0; background: rgba(15,25,23,0.92);
+    z-index:60; align-items:center; justify-content:center; padding:24px;
+  }
+  #lightbox img{ max-width:100%; max-height:90vh; border-radius:10px; }
+  #lightbox button{
+    position:absolute; top:20px; right:20px;
+    background: rgba(250,243,229,0.15); color:white; border:none;
+    width:40px; height:40px; border-radius:50%; font-size:1rem;
+  }
+
+  /* ---------- toast ---------- */
+  #toast{
+    position: fixed; left:50%; bottom:24px; transform: translateX(-50%) translateY(20px);
+    background: var(--forest-dark); color: var(--paper);
+    padding: 12px 20px; border-radius: 999px; font-size:0.88rem;
+    opacity:0; pointer-events:none; transition: all 0.25s ease;
+    z-index: 70;
+  }
+  #toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ---------- lock screen ---------- -->
+  <div id="lock-screen">
+    <div class="lock-card">
+      <div class="lock-stamp">👶</div>
+      <h1>Diário do Be</h1>
+      <p>Digite o código para ver e registrar as conquistas do Be.</p>
+      <form id="pin-form">
+        <div class="pin-boxes">
+          <input type="password" inputmode="numeric" maxlength="1" pattern="[0-9]*" required>
+          <input type="password" inputmode="numeric" maxlength="1" pattern="[0-9]*" required>
+          <input type="password" inputmode="numeric" maxlength="1" pattern="[0-9]*" required>
+          <input type="password" inputmode="numeric" maxlength="1" pattern="[0-9]*" required>
+        </div>
+        <div class="lock-error" id="lock-error"></div>
+        <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ---------- app ---------- -->
+  <div id="app">
+    <header class="hero">
+      <div class="hero-inner">
+        <div class="eyebrow">Diário de conquistas</div>
+        <h1>Tudo que o Be já conseguiu</h1>
+        <p class="sub">Um registro guardado por Caetano e Nathy, com fotos e uma palavrinha sobre cada conquista do Be.</p>
+        <div class="stat-row">
+          <div class="stat">
+            <div class="num mono" id="stat-count">0</div>
+            <div class="lbl">Conquistas</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div id="setup-banner">
+        <h3>Falta configurar o banco de dados</h3>
+        <p>
+          Abra o arquivo <code>diario-do-be.html</code> e, no início do script, preencha
+          <code>SUPABASE_URL</code> e <code>SUPABASE_ANON_KEY</code> com os dados do seu projeto
+          Supabase. Antes disso, rode o arquivo <code>configurar-supabase.sql</code> no
+          SQL Editor do Supabase para criar a tabela e o espaço para as fotos.
+        </p>
+      </div>
+
+      <div class="toolbar">
+        <button class="btn btn-gold" id="open-modal-btn">+ Nova conquista</button>
+      </div>
+
+      <div id="empty-state">
+        <div class="lock-stamp" style="margin:0 auto;">⭐</div>
+        <h3>Nenhuma conquista registrada ainda</h3>
+        <p>Que tal registrar a primeira coisa nova que o Be fez hoje?</p>
+      </div>
+
+      <div id="timeline"></div>
+    </main>
+  </div>
+
+  <!-- ---------- modal: new entry ---------- -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <h2>Registrar conquista</h2>
+      <form id="entry-form">
+        <div class="field">
+          <label for="f-date">Quando aconteceu</label>
+          <input type="date" id="f-date" required>
+        </div>
+        <div class="field">
+          <label for="f-author">Quem registrou</label>
+          <input type="text" id="f-author" placeholder="Caetano, Nathy...">
+        </div>
+        <div class="field">
+          <label>Tipo de conquista</label>
+          <div class="badge-grid" id="badge-grid"></div>
+          <input type="text" id="f-badge-custom" placeholder="Descreva a conquista" style="display:none; margin-top:10px; width:100%; padding:11px 13px; border-radius:12px; border:1.5px solid var(--paper-line);">
+        </div>
+        <div class="field">
+          <label for="f-title">Título curto</label>
+          <input type="text" id="f-title" placeholder='Ex: Falou "mamãe" pela primeira vez' required>
+        </div>
+        <div class="field">
+          <label for="f-note">O que ele fez, como fez</label>
+          <textarea id="f-note" placeholder="Conta os detalhes dessa conquista..."></textarea>
+        </div>
+        <div class="field">
+          <label>Fotos (opcional)</label>
+          <label class="file-drop" for="f-photos">
+            Toque para escolher fotos
+            <input type="file" id="f-photos" accept="image/*" multiple>
+          </label>
+          <div class="preview-row" id="preview-row"></div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="cancel-btn">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="save-btn">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ---------- lightbox ---------- -->
+  <div id="lightbox">
+    <button id="lightbox-close">✕</button>
+    <img id="lightbox-img" src="" alt="Foto do Be em tamanho maior">
+  </div>
+
+  <div id="toast"></div>
+
+<script>
+/* =========================================================
+   CONFIGURAÇÃO
+   Cole aqui os dados do seu projeto Supabase (veja o arquivo
+   configurar-supabase.sql para criar a tabela e o bucket antes).
+   ========================================================= */
+const SUPABASE_URL = 'COLE_AQUI_A_URL_DO_SEU_PROJETO_SUPABASE';
+const SUPABASE_ANON_KEY = 'COLE_AQUI_A_CHAVE_ANON_PUBLIC_DO_SUPABASE';
+const APP_PASSWORD = '1807';
+
+const isConfigured = !SUPABASE_URL.startsWith('COLE_') && !SUPABASE_ANON_KEY.startsWith('COLE_');
+const sb = isConfigured ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+const BADGES = [
+  { id:'palavra',  emoji:'🗣️', label:'Primeira palavra' },
+  { id:'passo',    emoji:'👣', label:'Primeiro passo' },
+  { id:'comeu',    emoji:'🍽️', label:'Comeu sozinho' },
+  { id:'noite',    emoji:'😴', label:'Dormiu a noite toda' },
+  { id:'desenho',  emoji:'🎨', label:'Rabiscou ou desenhou' },
+  { id:'quebra',   emoji:'🧩', label:'Montou um quebra-cabeça' },
+  { id:'letra',    emoji:'🔤', label:'Aprendeu letra ou número' },
+  { id:'musica',   emoji:'🎵', label:'Cantou uma música' },
+  { id:'correu',   emoji:'🏃', label:'Correu ou pulou' },
+  { id:'carinho',  emoji:'🤗', label:'Gesto de carinho' },
+  { id:'outra',    emoji:'⭐', label:'Outra conquista' },
+];
+
+let entries = [];
+let selectedBadge = null;
+let selectedFiles = [];
+
+/* ---------- helpers ---------- */
+function escapeHTML(str){
+  const div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), 2200);
+}
+function formatDate(dateStr){
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+/* ---------- lock screen ---------- */
+const pinInputs = document.querySelectorAll('#pin-form input');
+pinInputs.forEach((inp, i)=>{
+  inp.addEventListener('input', ()=>{
+    inp.value = inp.value.replace(/[^0-9]/g,'');
+    if(inp.value && i < pinInputs.length - 1) pinInputs[i+1].focus();
+  });
+  inp.addEventListener('keydown', (e)=>{
+    if(e.key === 'Backspace' && !inp.value && i > 0) pinInputs[i-1].focus();
+  });
+});
+document.getElementById('pin-form').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const entered = Array.from(pinInputs).map(i=>i.value).join('');
+  if(entered === APP_PASSWORD){
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    sessionStorage.setItem('be_diario_unlocked', 'true');
+    boot();
+  } else {
+    const card = document.querySelector('.lock-card');
+    card.classList.add('shake');
+    setTimeout(()=> card.classList.remove('shake'), 400);
+    document.getElementById('lock-error').textContent = 'Código incorreto, tenta de novo.';
+    pinInputs.forEach(i=> i.value = '');
+    pinInputs[0].focus();
+  }
+});
+if(sessionStorage.getItem('be_diario_unlocked') === 'true'){
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  boot();
+}
+
+/* ---------- badge picker ---------- */
+const badgeGrid = document.getElementById('badge-grid');
+BADGES.forEach(b=>{
+  const chip = document.createElement('button');
+  chip.type = 'button';
+  chip.className = 'badge-chip';
+  chip.dataset.id = b.id;
+  chip.innerHTML = `<span>${b.emoji}</span><span>${b.label}</span>`;
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('.badge-chip').forEach(c=> c.classList.remove('selected'));
+    chip.classList.add('selected');
+    selectedBadge = b.id;
+    document.getElementById('f-badge-custom').style.display = (b.id === 'outra') ? 'block' : 'none';
+  });
+  badgeGrid.appendChild(chip);
+});
+
+/* ---------- modal open/close ---------- */
+const overlay = document.getElementById('modal-overlay');
+function openModal(){
+  document.getElementById('entry-form').reset();
+  document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
+  document.querySelectorAll('.badge-chip').forEach(c=> c.classList.remove('selected'));
+  document.getElementById('f-badge-custom').style.display = 'none';
+  selectedBadge = null;
+  selectedFiles = [];
+  document.getElementById('preview-row').innerHTML = '';
+  overlay.style.display = 'flex';
+}
+function closeModal(){ overlay.style.display = 'none'; }
+document.getElementById('open-modal-btn').addEventListener('click', openModal);
+document.getElementById('cancel-btn').addEventListener('click', closeModal);
+overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModal(); });
+
+/* ---------- photo picker ---------- */
+document.getElementById('f-photos').addEventListener('change', (e)=>{
+  const files = Array.from(e.target.files);
+  files.forEach(file=>{
+    selectedFiles.push(file);
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      const item = document.createElement('div');
+      item.className = 'preview-item';
+      item.innerHTML = `<img src="${ev.target.result}" alt="Prévia da foto"><button type="button">✕</button>`;
+      item.querySelector('button').addEventListener('click', ()=>{
+        selectedFiles = selectedFiles.filter(f=> f !== file);
+        item.remove();
+      });
+      document.getElementById('preview-row').appendChild(item);
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = '';
+});
+
+/* ---------- lightbox ---------- */
+const lightbox = document.getElementById('lightbox');
+function openLightbox(url){
+  document.getElementById('lightbox-img').src = url;
+  lightbox.style.display = 'flex';
+}
+document.getElementById('lightbox-close').addEventListener('click', ()=> lightbox.style.display = 'none');
+lightbox.addEventListener('click', (e)=>{ if(e.target === lightbox) lightbox.style.display = 'none'; });
+
+/* ---------- rendering ---------- */
+function render(){
+  const timeline = document.getElementById('timeline');
+  document.getElementById('stat-count').textContent = entries.length;
+  document.getElementById('empty-state').style.display = entries.length ? 'none' : 'block';
+  timeline.innerHTML = '';
+  entries.forEach(entry=>{
+    const badge = BADGES.find(b=> b.id === entry.badge) || { emoji:'⭐', label: entry.badge };
+    const card = document.createElement('div');
+    card.className = 'entry-card';
+    const photosHTML = (entry.photos || []).map(url=>
+      `<img class="photo-thumb" src="${url}" alt="Foto de ${escapeHTML(entry.title)}" onclick="openLightbox('${url}')">`
+    ).join('');
+    card.innerHTML = `
+      <div class="entry-actions">
+        <button class="icon-btn" data-id="${entry.id}">Excluir</button>
+      </div>
+      <div class="entry-top">
+        <div class="stamp-badge">${badge.emoji}</div>
+        <div class="entry-meta">
+          <div class="entry-date mono">${formatDate(entry.entry_date)}</div>
+          <h3 class="entry-title">${escapeHTML(entry.title)}</h3>
+          ${entry.author ? `<span class="entry-author">${escapeHTML(entry.author)}</span>` : ''}
+        </div>
+      </div>
+      ${entry.note ? `<div class="entry-note">${escapeHTML(entry.note)}</div>` : ''}
+      ${photosHTML ? `<div class="photo-row">${photosHTML}</div>` : ''}
+    `;
+    card.querySelector('.icon-btn').addEventListener('click', (e)=> handleDeleteClick(e.target, entry.id));
+    timeline.appendChild(card);
+  });
+}
+
+function handleDeleteClick(btn, id){
+  const actions = btn.parentElement;
+  actions.innerHTML = `
+    <div class="confirm-row">
+      <span>Excluir?</span>
+      <button class="icon-btn" id="confirm-yes">Sim</button>
+      <button class="icon-btn" id="confirm-no">Não</button>
+    </div>
+  `;
+  document.getElementById('confirm-yes').addEventListener('click', ()=> deleteEntry(id));
+  document.getElementById('confirm-no').addEventListener('click', render);
+}
+
+/* ---------- data layer ---------- */
+async function loadEntries(){
+  if(!isConfigured) return;
+  const { data, error } = await sb.from('be_entries').select('*').order('entry_date', { ascending:false }).order('created_at', { ascending:false });
+  if(error){ showToast('Não consegui carregar as conquistas.'); return; }
+  entries = data || [];
+  render();
+}
+
+async function uploadPhotos(files, entryId){
+  const urls = [];
+  for(const file of files){
+    const path = `entries/${entryId}-${Date.now()}-${file.name}`;
+    const { error } = await sb.storage.from('be-photos').upload(path, file);
+    if(error){ showToast('Uma foto não pôde ser enviada.'); continue; }
+    const { data } = sb.storage.from('be-photos').getPublicUrl(path);
+    urls.push(data.publicUrl);
+  }
+  return urls;
+}
+
+async function deleteEntry(id){
+  const { error } = await sb.from('be_entries').delete().eq('id', id);
+  if(error){ showToast('Não consegui excluir essa conquista.'); return; }
+  entries = entries.filter(e=> e.id !== id);
+  render();
+  showToast('Conquista excluída.');
+}
+
+document.getElementById('entry-form').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  if(!isConfigured){ showToast('Configure o Supabase antes de salvar.'); return; }
+  if(!selectedBadge){ showToast('Escolha o tipo de conquista.'); return; }
+
+  const saveBtn = document.getElementById('save-btn');
+  saveBtn.textContent = 'Salvando...';
+  saveBtn.disabled = true;
+
+  const badgeValue = selectedBadge === 'outra'
+    ? (document.getElementById('f-badge-custom').value.trim() || 'Outra conquista')
+    : selectedBadge;
+
+  const entryId = crypto.randomUUID();
+  const photoUrls = selectedFiles.length ? await uploadPhotos(selectedFiles, entryId) : [];
+
+  const newEntry = {
+    id: entryId,
+    entry_date: document.getElementById('f-date').value,
+    title: document.getElementById('f-title').value.trim(),
+    badge: badgeValue,
+    note: document.getElementById('f-note').value.trim(),
+    author: document.getElementById('f-author').value.trim(),
+    photos: photoUrls,
+  };
+
+  const { error } = await sb.from('be_entries').insert(newEntry);
+  saveBtn.textContent = 'Salvar';
+  saveBtn.disabled = false;
+
+  if(error){ showToast('Não consegui salvar essa conquista.'); return; }
+
+  entries.unshift(newEntry);
+  render();
+  closeModal();
+  showToast('Conquista registrada!');
+});
+
+/* ---------- realtime sync ---------- */
+function subscribeRealtime(){
+  if(!isConfigured) return;
+  sb.channel('be_entries_live')
+    .on('postgres_changes', { event:'*', schema:'public', table:'be_entries' }, ()=> loadEntries())
+    .subscribe();
+}
+
+/* ---------- boot ---------- */
+function boot(){
+  if(!isConfigured){
+    document.getElementById('setup-banner').style.display = 'block';
+    document.getElementById('open-modal-btn').disabled = true;
+    return;
+  }
+  loadEntries();
+  subscribeRealtime();
+}
+</script>
+</body>
+</html>
