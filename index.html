@@ -522,10 +522,10 @@
     color:#6B3F1D; padding: 20px 16px 6px;
   }
   .color-options{
-    display:grid; grid-template-columns: repeat(2, 1fr); gap:24px;
-    padding:24px; max-width:380px; margin:0 auto; flex:1; align-content:center;
+    display:grid; grid-template-columns: repeat(2, 1fr); gap:22px;
+    padding:24px; max-width:420px; margin:0 auto; flex:1; align-content:center;
   }
-  .color-circle{ aspect-ratio:1; border-radius:50%; border:6px solid white; box-shadow: 0 10px 24px rgba(0,0,0,0.18); }
+  .color-circle{ aspect-ratio:1; border-radius:50%; border:6px solid white; box-shadow: 0 10px 24px rgba(0,0,0,0.18); min-height:120px; }
 
   .count-label{
     text-align:center; font-size:1.25rem; font-weight:800; font-family:'Fraunces', serif;
@@ -538,8 +538,72 @@
   .paint-canvas-wrap{ flex:1; position:relative; }
   #paint-canvas{ width:100%; height:100%; display:block; touch-action:none; background:white; }
   .paint-toolbar{ display:flex; align-items:center; gap:10px; padding:14px 16px; background: rgba(255,255,255,0.75); flex-wrap:wrap; }
-  .paint-color{ width:38px; height:38px; border-radius:50%; border:3px solid white; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
+  .paint-color{ width:56px; height:56px; border-radius:50%; border:4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.25); flex:0 0 auto; }
   .paint-color.selected{ outline:3px solid #4A3320; outline-offset:2px; }
+
+  /* ---------- moedas ---------- */
+  .coin-display{
+    background: rgba(255,255,255,0.6); border-radius:999px; padding:8px 14px;
+    font-weight:800; font-size:0.92rem; color:#8A5A00; font-family:'Space Mono', monospace;
+  }
+  .coin-popup{
+    position:fixed; left:50%; top:40%; transform: translate(-50%,-50%);
+    font-size:1.6rem; font-weight:800; color:#B37F2E;
+    z-index:90; pointer-events:none; animation: coin-float 1.2s ease forwards;
+  }
+  @keyframes coin-float{
+    0%{ opacity:0; transform: translate(-50%,-40%) scale(0.7); }
+    30%{ opacity:1; transform: translate(-50%,-60%) scale(1.15); }
+    100%{ opacity:0; transform: translate(-50%,-90%) scale(1); }
+  }
+
+  /* ---------- descobrindo (setinhas) ---------- */
+  .deck-stage{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; padding:20px; }
+  .deck-arrow{
+    width:70px; height:70px; border-radius:50%; border:none;
+    background: rgba(255,255,255,0.7); font-size:26px; box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+  }
+  .deck-arrow:active{ transform: scale(0.92); }
+  .deck-card{
+    background: rgba(255,255,255,0.65); border-radius:32px; padding:40px 54px;
+    text-align:center; box-shadow: 0 12px 28px rgba(0,0,0,0.15); min-width:220px;
+  }
+  .deck-emoji{ font-size:90px; }
+  .deck-name{ font-size:1.4rem; font-weight:800; font-family:'Fraunces', serif; color:#4A3320; margin-top:10px; text-transform:capitalize; }
+
+  /* ---------- meu piano ---------- */
+  .piano-grid{
+    flex:1; display:grid; grid-template-columns: repeat(4, 1fr); gap:12px;
+    padding:20px; align-content:center; max-width:480px; margin:0 auto;
+  }
+  .piano-pad{ aspect-ratio:1; border:none; border-radius:24px; font-size:30px; color:white; box-shadow: 0 8px 18px rgba(0,0,0,0.18); }
+  .piano-pad:active{ transform: scale(0.92); }
+
+  /* ---------- bichinho virtual ---------- */
+  .pet-stage{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:20px; }
+  .pet-character{ font-size:110px; }
+  .pet-character.bounce{ animation: animal-bounce 0.5s ease; }
+  .pet-accessories{ font-size:28px; }
+  .pet-speech{
+    background: rgba(255,255,255,0.75); border-radius:20px; padding:14px 20px;
+    font-size:1.05rem; font-weight:700; color:#4A3320; text-align:center; max-width:320px;
+    font-family:'Fraunces', serif;
+  }
+  .pet-camera-wrap{ padding:0 16px 12px; }
+  .pet-camera-wrap video{ width:100%; border-radius:20px; box-shadow: 0 10px 26px rgba(0,0,0,0.2); }
+  .pet-actions{ padding:16px; }
+
+  /* ---------- loja ---------- */
+  .shop-hint{ text-align:center; font-size:0.9rem; color:#6B3F1D; padding:6px 20px 0; }
+  .shop-grid{
+    display:grid; grid-template-columns: repeat(2, 1fr); gap:14px;
+    padding:16px; max-width:480px; margin:0 auto;
+  }
+  .shop-item{ background: rgba(255,255,255,0.75); border-radius:20px; padding:20px 10px; text-align:center; border:none; box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+  .shop-item-emoji{ font-size:42px; }
+  .shop-item-label{ font-size:0.82rem; font-weight:700; margin-top:8px; color:#4A3320; }
+  .shop-item-price{ font-size:0.82rem; margin-top:4px; color:#B37F2E; font-weight:800; }
+  .shop-item.owned{ opacity:0.65; }
 </style>
 </head>
 <body>
@@ -650,6 +714,7 @@
       <div class="games-header">
         <button type="button" class="btn btn-ghost" id="games-exit-btn">← Sair</button>
         <h1>Hora de Brincar</h1>
+        <div class="coin-display">🪙 0</div>
       </div>
       <div class="games-grid">
         <button class="game-card" data-game="bichos" style="--gc1:#FF8C6B;--gc2:#FFD93D;">
@@ -671,6 +736,22 @@
         <button class="game-card" data-game="pintura" style="--gc1:#B980F0;--gc2:#F786AA;">
           <span class="game-card-icon">✏️</span>
           <span>Pintura Livre</span>
+        </button>
+        <button class="game-card" data-game="descobrindo" style="--gc1:#F9C74F;--gc2:#90BE6D;">
+          <span class="game-card-icon">🔠</span>
+          <span>Descobrindo</span>
+        </button>
+        <button class="game-card" data-game="piano" style="--gc1:#9D8CFF;--gc2:#5FA8FF;">
+          <span class="game-card-icon">🎹</span>
+          <span>Meu Piano</span>
+        </button>
+        <button class="game-card" data-game="bichinho" style="--gc1:#FF9ECD;--gc2:#7BDFF2;">
+          <span class="game-card-icon">🐾</span>
+          <span>Bichinho Virtual</span>
+        </button>
+        <button class="game-card" data-game="loja" style="--gc1:#FFC168;--gc2:#FF934F;">
+          <span class="game-card-icon">🏪</span>
+          <span>Loja</span>
         </button>
       </div>
     </div>
@@ -726,6 +807,58 @@
         <button type="button" class="paint-color" style="background:#9D4EDD" data-color="#9D4EDD"></button>
         <button type="button" class="btn btn-gold btn-sm" id="paint-clear-btn" style="margin-left:auto;">🧽 Limpar</button>
       </div>
+    </div>
+
+    <!-- jogo: descobrindo (setinhas) -->
+    <div class="game-screen" id="game-descobrindo" style="background: linear-gradient(160deg,#FFF3B0,#CDEAC0);">
+      <div class="game-top-bar">
+        <button type="button" class="game-back-btn">← Voltar</button>
+      </div>
+      <div class="deck-stage">
+        <button type="button" class="deck-arrow" id="deck-up-btn">▲</button>
+        <div class="deck-card">
+          <div class="deck-emoji" id="deck-emoji">🐶</div>
+          <div class="deck-name" id="deck-name">cachorro</div>
+        </div>
+        <button type="button" class="deck-arrow" id="deck-down-btn">▼</button>
+      </div>
+    </div>
+
+    <!-- jogo: meu piano -->
+    <div class="game-screen" id="game-piano" style="background: linear-gradient(160deg,#E0C3FC,#8EC5FC);">
+      <div class="game-top-bar">
+        <button type="button" class="game-back-btn">← Voltar</button>
+      </div>
+      <div class="piano-grid" id="piano-grid"></div>
+    </div>
+
+    <!-- jogo: bichinho virtual -->
+    <div class="game-screen" id="game-bichinho" style="background: linear-gradient(160deg,#FFE0F0,#E0F7FA);">
+      <div class="game-top-bar">
+        <button type="button" class="game-back-btn">← Voltar</button>
+      </div>
+      <div class="pet-stage">
+        <div class="pet-character" id="pet-character">🐶</div>
+        <div class="pet-accessories" id="pet-accessories"></div>
+        <div class="pet-speech" id="pet-speech">Oi! Toca em mim!</div>
+      </div>
+      <div class="pet-camera-wrap" id="pet-camera-wrap" style="display:none;">
+        <video id="pet-video" autoplay playsinline muted></video>
+        <canvas id="pet-capture-canvas" style="display:none;"></canvas>
+      </div>
+      <div class="pet-actions">
+        <button type="button" class="btn btn-gold btn-block" id="pet-camera-btn">📷 Mostra pra mim!</button>
+      </div>
+    </div>
+
+    <!-- jogo: loja -->
+    <div class="game-screen" id="game-loja" style="background: linear-gradient(160deg,#FFF0DB,#FFD9A0);">
+      <div class="game-top-bar">
+        <button type="button" class="game-back-btn">← Voltar</button>
+        <div class="coin-display">🪙 0</div>
+      </div>
+      <p class="shop-hint">Ganhe moedinhas jogando e troque por coisas divertidas!</p>
+      <div class="shop-grid" id="shop-grid"></div>
     </div>
   </div>
 
@@ -1812,16 +1945,52 @@ function subscribeRealtime(){
 /* =========================================================
    ÁREA DE JOGOS
    ========================================================= */
-function speakPT(text){
+let ptVoice = null;
+function warmUpVoices(){
+  if(!('speechSynthesis' in window)) return;
+  const pick = ()=>{
+    const voices = speechSynthesis.getVoices();
+    ptVoice = voices.find(v=> v.lang === 'pt-BR') || voices.find(v=> v.lang && v.lang.startsWith('pt')) || null;
+  };
+  pick();
+  speechSynthesis.onvoiceschanged = pick;
+}
+warmUpVoices();
+
+function speakBrowserFallback(text){
   if(!('speechSynthesis' in window)) return;
   try{
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'pt-BR';
-    u.rate = 0.9;
-    u.pitch = 1.25;
+    u.rate = 0.92;
+    u.pitch = 1.15;
+    if(ptVoice) u.voice = ptVoice;
     speechSynthesis.speak(u);
   }catch(err){ console.warn('Não consegui falar:', err); }
+}
+let speakToken = 0;
+function speakPT(text){
+  const myToken = ++speakToken;
+  if('speechSynthesis' in window) speechSynthesis.cancel();
+  const url = `https://text.pollinations.ai/${encodeURIComponent(text)}?model=openai-audio&voice=nova`;
+  const audio = new Audio(url);
+  let settled = false;
+  const timer = setTimeout(()=>{
+    if(!settled){ settled = true; if(myToken === speakToken) speakBrowserFallback(text); }
+  }, 3500);
+  audio.addEventListener('canplaythrough', ()=>{
+    if(settled) return;
+    settled = true;
+    clearTimeout(timer);
+    if(myToken === speakToken) audio.play().catch(()=>{ if(myToken === speakToken) speakBrowserFallback(text); });
+  });
+  audio.addEventListener('error', ()=>{
+    if(settled) return;
+    settled = true;
+    clearTimeout(timer);
+    if(myToken === speakToken) speakBrowserFallback(text);
+  });
 }
 
 let gamesEntryPoint = null;
@@ -1851,6 +2020,7 @@ function showGamesHub(){
 }
 function stopActiveGame(){
   if(activeGame === 'bolhas') stopBubbles();
+  if(activeGame === 'bichinho') stopPetCamera();
   if('speechSynthesis' in window) speechSynthesis.cancel();
   activeGame = null;
 }
@@ -1863,7 +2033,11 @@ function openGame(key){
   if(key === 'bolhas') startBubbles();
   if(key === 'cores') newColorRound();
   if(key === 'contagem') newCountRound();
-  if(key === 'pintura') setTimeout(setupPaintCanvas, 50);
+  if(key === 'pintura'){ setTimeout(setupPaintCanvas, 50); renderPaintPalette(); }
+  if(key === 'descobrindo') showDeckCard();
+  if(key === 'piano') renderPiano();
+  if(key === 'bichinho') renderPetAccessories();
+  if(key === 'loja') renderShop();
 }
 document.getElementById('games-open-btn').addEventListener('click', ()=> openGames('app'));
 document.getElementById('lock-games-btn').addEventListener('click', ()=> openGames('lock'));
@@ -1877,12 +2051,12 @@ document.querySelectorAll('.game-back-btn').forEach(btn=>{
 
 /* ---------- jogo: bichos e sons ---------- */
 const ANIMALS = [
-  { emoji:'🐶', sound:'Au au!' },
-  { emoji:'🐱', sound:'Miau!' },
-  { emoji:'🐮', sound:'Muuu!' },
-  { emoji:'🦆', sound:'Quá quá!' },
-  { emoji:'🦁', sound:'Rrrooar!' },
-  { emoji:'🐦', sound:'Piu piu!' },
+  { emoji:'🐶', name:'cachorro', sound:'Au au!', url:'https://www.google.com/logos/fnbx/animal_sounds/dog.mp3' },
+  { emoji:'🐱', name:'gato', sound:'Miau!', url:'https://www.google.com/logos/fnbx/animal_sounds/cat.mp3' },
+  { emoji:'🐮', name:'vaca', sound:'Muuu!', url:'https://www.google.com/logos/fnbx/animal_sounds/cow.mp3' },
+  { emoji:'🦆', name:'pato', sound:'Quá quá!', url:'https://www.google.com/logos/fnbx/animal_sounds/duck.mp3' },
+  { emoji:'🦁', name:'leão', sound:'Rrrooar!', url:'https://www.google.com/logos/fnbx/animal_sounds/lion.mp3' },
+  { emoji:'🐑', name:'ovelha', sound:'Béé!', url:'https://www.google.com/logos/fnbx/animal_sounds/sheep.mp3' },
 ];
 function renderAnimalGrid(){
   const wrap = document.getElementById('animal-grid');
@@ -1895,16 +2069,20 @@ function renderAnimalGrid(){
       btn.classList.remove('bounce');
       void btn.offsetWidth;
       btn.classList.add('bounce');
-      speakPT(animal.sound);
+      const audio = new Audio(animal.url);
+      audio.play().catch(()=> speakBrowserFallback(animal.sound));
+      audio.addEventListener('error', ()=> speakBrowserFallback(animal.sound));
     });
   });
 }
 
 /* ---------- jogo: bolhas ---------- */
 let bubbleSpawnInterval = null;
+let bubblePopCount = 0;
 function startBubbles(){
   const area = document.getElementById('bubble-area');
   area.innerHTML = '';
+  bubblePopCount = 0;
   spawnBubble();
   bubbleSpawnInterval = setInterval(spawnBubble, 900);
 }
@@ -1928,6 +2106,8 @@ function popBubble(bubble){
   playPopSound();
   bubble.classList.add('popping');
   setTimeout(()=> bubble.remove(), 250);
+  bubblePopCount++;
+  if(bubblePopCount % 15 === 0) addCoins(1);
 }
 function playPopSound(){
   try{
@@ -1964,6 +2144,7 @@ function newColorRound(){
     btn.addEventListener('click', ()=>{
       if(btn.dataset.name === target.name){
         celebrate();
+        addCoins(1);
         speakPT('Isso! Muito bem!');
         setTimeout(()=>{ if(activeGame === 'cores') newColorRound(); }, 1700);
       } else {
@@ -2006,6 +2187,7 @@ function tapCountItem(item){
   if(countProgress === countTarget){
     setTimeout(()=>{
       celebrate();
+      addCoins(1);
       speakPT('Você contou tudo! Parabéns!');
       setTimeout(()=>{ if(activeGame === 'contagem') newCountRound(); }, 1800);
     }, 500);
@@ -2016,6 +2198,9 @@ function tapCountItem(item){
 let paintCtx = null;
 let painting = false;
 let paintColor = '#E63946';
+let rainbowMode = false;
+let rainbowHue = 0;
+let lastPaintPos = null;
 function setupPaintCanvas(){
   const canvas = document.getElementById('paint-canvas');
   const rect = canvas.getBoundingClientRect();
@@ -2031,16 +2216,17 @@ function setupPaintCanvas(){
   canvas.dataset.bound = 'true';
   canvas.addEventListener('pointerdown', (e)=>{
     painting = true;
-    const pos = getPaintPos(e, canvas);
-    paintCtx.strokeStyle = paintColor;
-    paintCtx.beginPath();
-    paintCtx.moveTo(pos.x, pos.y);
+    lastPaintPos = getPaintPos(e, canvas);
   });
   canvas.addEventListener('pointermove', (e)=>{
     if(!painting) return;
     const pos = getPaintPos(e, canvas);
+    paintCtx.strokeStyle = rainbowMode ? `hsl(${(rainbowHue = (rainbowHue + 4) % 360)},80%,60%)` : paintColor;
+    paintCtx.beginPath();
+    paintCtx.moveTo(lastPaintPos.x, lastPaintPos.y);
     paintCtx.lineTo(pos.x, pos.y);
     paintCtx.stroke();
+    lastPaintPos = pos;
   });
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(evt=>
     canvas.addEventListener(evt, ()=> painting = false)
@@ -2050,10 +2236,11 @@ function getPaintPos(e, canvas){
   const rect = canvas.getBoundingClientRect();
   return { x: e.clientX - rect.left, y: e.clientY - rect.top };
 }
-document.querySelectorAll('.paint-color').forEach(btn=>{
+document.querySelectorAll('#game-pintura .paint-color').forEach(btn=>{
   btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.paint-color').forEach(b=> b.classList.remove('selected'));
+    document.querySelectorAll('#game-pintura .paint-color').forEach(b=> b.classList.remove('selected'));
     btn.classList.add('selected');
+    rainbowMode = false;
     paintColor = btn.dataset.color;
   });
 });
@@ -2063,6 +2250,237 @@ document.getElementById('paint-clear-btn').addEventListener('click', ()=>{
   paintCtx.clearRect(0, 0, canvas.width, canvas.height);
   playPopSound();
 });
+function renderPaintPalette(){
+  const owned = getOwned();
+  const toolbar = document.querySelector('#game-pintura .paint-toolbar');
+  toolbar.querySelectorAll('.paint-color.bonus').forEach(b=> b.remove());
+  const clearBtn = document.getElementById('paint-clear-btn');
+  if(owned.includes('paint_dourado')){
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'paint-color bonus';
+    b.style.background = 'linear-gradient(135deg,#FFD700,#FFF3B0)';
+    b.dataset.color = '#FFD700';
+    b.addEventListener('click', ()=>{
+      document.querySelectorAll('#game-pintura .paint-color').forEach(x=> x.classList.remove('selected'));
+      b.classList.add('selected');
+      rainbowMode = false;
+      paintColor = '#FFD700';
+    });
+    toolbar.insertBefore(b, clearBtn);
+  }
+  if(owned.includes('paint_arcoiris')){
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'paint-color bonus';
+    b.style.background = 'conic-gradient(red,orange,yellow,green,blue,violet,red)';
+    b.addEventListener('click', ()=>{
+      document.querySelectorAll('#game-pintura .paint-color').forEach(x=> x.classList.remove('selected'));
+      b.classList.add('selected');
+      rainbowMode = true;
+    });
+    toolbar.insertBefore(b, clearBtn);
+  }
+}
+
+/* ---------- jogo: descobrindo (setinhas) ---------- */
+const DECK = [
+  { emoji:'🐶', name:'cachorro' }, { emoji:'🐱', name:'gato' }, { emoji:'🐘', name:'elefante' },
+  { emoji:'🦋', name:'borboleta' }, { emoji:'🚗', name:'carro' }, { emoji:'🚌', name:'ônibus' },
+  { emoji:'⚽', name:'bola' }, { emoji:'🌙', name:'lua' }, { emoji:'☀️', name:'sol' },
+  { emoji:'🔺', name:'triângulo' }, { emoji:'⭐', name:'estrela' }, { emoji:'❤️', name:'coração' },
+];
+let deckIndex = 0;
+let deckHasMoved = false;
+function showDeckCard(){
+  const card = DECK[deckIndex];
+  document.getElementById('deck-emoji').textContent = card.emoji;
+  document.getElementById('deck-name').textContent = card.name;
+  speakPT(card.name);
+  if(deckHasMoved && deckIndex === 0) addCoins(1);
+}
+document.getElementById('deck-up-btn').addEventListener('click', ()=>{
+  deckHasMoved = true;
+  deckIndex = (deckIndex - 1 + DECK.length) % DECK.length;
+  showDeckCard();
+});
+document.getElementById('deck-down-btn').addEventListener('click', ()=>{
+  deckHasMoved = true;
+  deckIndex = (deckIndex + 1) % DECK.length;
+  showDeckCard();
+});
+
+/* ---------- jogo: meu piano ---------- */
+const PIANO_NOTES = [261.63, 293.66, 329.63, 349.23, 392.0, 440.0, 493.88, 523.25];
+const PIANO_COLORS = ['#FF6B6B', '#FFA94D', '#FFD43B', '#69DB7C', '#4DABF7', '#748FFC', '#DA77F2', '#FF8FAB'];
+function renderPiano(){
+  const wrap = document.getElementById('piano-grid');
+  if(wrap.dataset.built) return;
+  wrap.dataset.built = 'true';
+  wrap.innerHTML = PIANO_NOTES.map((f, i)=> `<button type="button" class="piano-pad" style="background:${PIANO_COLORS[i]}" data-freq="${f}">🎵</button>`).join('');
+  wrap.querySelectorAll('.piano-pad').forEach(pad=>{
+    pad.addEventListener('click', ()=> playNote(parseFloat(pad.dataset.freq)));
+  });
+}
+function playNote(freq){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(); osc.stop(ctx.currentTime + 0.6);
+  }catch(err){ /* som é só um extra */ }
+}
+
+/* ---------- jogo: bichinho virtual ---------- */
+const PET_PHRASES = ['Oi! Eu sou seu amigo!', 'Vamos brincar?', 'Eu gosto muito de você!', 'Você é demais!', 'Tô muito feliz hoje!', 'Uau, que legal!'];
+let petStream = null;
+document.getElementById('pet-character').addEventListener('click', ()=>{
+  const phrase = PET_PHRASES[Math.floor(Math.random() * PET_PHRASES.length)];
+  document.getElementById('pet-speech').textContent = phrase;
+  const pet = document.getElementById('pet-character');
+  pet.classList.remove('bounce');
+  void pet.offsetWidth;
+  pet.classList.add('bounce');
+  speakPT(phrase);
+});
+function renderPetAccessories(){
+  const owned = getOwned();
+  const emojis = [];
+  if(owned.includes('pet_chapeu')) emojis.push('🎩');
+  if(owned.includes('pet_oculos')) emojis.push('🕶️');
+  document.getElementById('pet-accessories').textContent = emojis.join(' ');
+}
+function stopPetCamera(){
+  if(petStream){ petStream.getTracks().forEach(t=> t.stop()); petStream = null; }
+  document.getElementById('pet-camera-wrap').style.display = 'none';
+  document.getElementById('pet-camera-btn').textContent = '📷 Mostra pra mim!';
+}
+document.getElementById('pet-camera-btn').addEventListener('click', async ()=>{
+  const wrap = document.getElementById('pet-camera-wrap');
+  if(wrap.style.display === 'none'){
+    try{
+      petStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      document.getElementById('pet-video').srcObject = petStream;
+      wrap.style.display = 'block';
+      document.getElementById('pet-camera-btn').textContent = '🔍 O que é isso?';
+    }catch(err){
+      console.error('Erro ao acessar a câmera:', err);
+      document.getElementById('pet-speech').textContent = 'Não consegui ver pela câmera :(';
+    }
+  } else {
+    identifyFromCamera();
+  }
+});
+async function identifyFromCamera(){
+  const video = document.getElementById('pet-video');
+  const canvas = document.getElementById('pet-capture-canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+  document.getElementById('pet-speech').textContent = 'Deixa eu ver...';
+  try{
+    const res = await fetch('https://text.pollinations.ai/openai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'openai',
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'text', text: 'Você é um bichinho de estimação fofo conversando com uma criança de 2 anos em português do Brasil. Olhe a imagem e diga em uma frase bem curta e animada o que você está vendo, tipo "Eu vejo um cachorrinho fofo!". Sem explicação, só a frase.' },
+            { type: 'image_url', image_url: { url: dataUrl } }
+          ]
+        }]
+      })
+    });
+    const data = await res.json();
+    const text = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content ? data.choices[0].message.content.trim() : '';
+    if(!text) throw new Error('sem resposta');
+    document.getElementById('pet-speech').textContent = text;
+    speakPT(text);
+    addCoins(2);
+  }catch(err){
+    console.error('Erro ao identificar imagem:', err);
+    document.getElementById('pet-speech').textContent = 'Hmm, não consegui ver direito. Tenta de novo!';
+  }
+  document.getElementById('pet-camera-btn').textContent = '📷 Mostra pra mim de novo!';
+}
+
+/* ---------- moedas e loja ---------- */
+let coins = 0;
+function loadCoins(){
+  coins = parseInt(localStorage.getItem('be_games_coins') || '0', 10) || 0;
+  updateCoinDisplay();
+}
+function addCoins(n){
+  coins += n;
+  localStorage.setItem('be_games_coins', String(coins));
+  updateCoinDisplay();
+  showCoinPopup(n);
+}
+function spendCoins(n){
+  if(coins < n) return false;
+  coins -= n;
+  localStorage.setItem('be_games_coins', String(coins));
+  updateCoinDisplay();
+  return true;
+}
+function updateCoinDisplay(){
+  document.querySelectorAll('.coin-display').forEach(el=> el.textContent = '🪙 ' + coins);
+}
+function showCoinPopup(n){
+  const p = document.createElement('div');
+  p.className = 'coin-popup';
+  p.textContent = '+' + n + ' 🪙';
+  document.getElementById('games-view').appendChild(p);
+  setTimeout(()=> p.remove(), 1200);
+}
+function getOwned(){
+  try{ return JSON.parse(localStorage.getItem('be_games_owned') || '[]'); }
+  catch(err){ return []; }
+}
+function setOwned(arr){ localStorage.setItem('be_games_owned', JSON.stringify(arr)); }
+const SHOP_ITEMS = [
+  { id:'pet_chapeu', label:'Chapéu do bichinho', emoji:'🎩', price:8 },
+  { id:'pet_oculos', label:'Óculos do bichinho', emoji:'🕶️', price:8 },
+  { id:'paint_dourado', label:'Cor dourada na pintura', emoji:'✨', price:6 },
+  { id:'paint_arcoiris', label:'Pincel arco-íris', emoji:'🌈', price:12 },
+];
+function renderShop(){
+  const owned = getOwned();
+  document.getElementById('shop-grid').innerHTML = SHOP_ITEMS.map(item=>{
+    const isOwned = owned.includes(item.id);
+    return `<button type="button" class="shop-item${isOwned ? ' owned' : ''}" data-id="${item.id}" data-price="${item.price}">
+      <div class="shop-item-emoji">${item.emoji}</div>
+      <div class="shop-item-label">${item.label}</div>
+      <div class="shop-item-price">${isOwned ? '✓ Seu!' : '🪙 ' + item.price}</div>
+    </button>`;
+  }).join('');
+  document.querySelectorAll('.shop-item').forEach(btn=>{
+    btn.addEventListener('click', ()=> buyItem(btn.dataset.id, parseInt(btn.dataset.price, 10)));
+  });
+}
+function buyItem(id, price){
+  const owned = getOwned();
+  if(owned.includes(id)) return;
+  if(!spendCoins(price)){
+    showToast('Ainda não tem moedinhas suficientes!');
+    return;
+  }
+  owned.push(id);
+  setOwned(owned);
+  renderShop();
+  renderPetAccessories();
+  renderPaintPalette();
+  celebrate();
+}
+loadCoins();
 
 function boot(){
   if(!isConfigured){
