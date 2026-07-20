@@ -12,20 +12,41 @@
   /* ---------- tokens ---------- */
   :root{
     --paper: #FAF3E5;
-    --paper-line: rgba(31,59,47,0.14);
     --ink: #263A38;
     --forest: #4F7965;
     --forest-dark: #1F3B2F;
     --gold: #D8A34D;
     --gold-dark: #B37F2E;
     --blush: #E8AFA3;
+    --forest-rgb: 79,121,101;
+    --forest-dark-rgb: 31,59,47;
+    --gold-rgb: 216,163,77;
+    --gold-dark-rgb: 179,127,46;
+    --blush-rgb: 232,175,163;
+    --paper-line: rgba(var(--forest-dark-rgb),0.14);
     --radius: 22px;
-    --shadow: 0 8px 30px rgba(31,59,47,0.14);
+    --shadow: 0 8px 30px rgba(var(--forest-dark-rgb),0.14);
     --glass-bg: rgba(255,255,255,0.5);
     --glass-bg-strong: rgba(255,255,255,0.68);
     --glass-border: rgba(255,255,255,0.7);
     --glass-blur: blur(22px) saturate(160%);
     font-size: 16px;
+  }
+  html[data-theme="oceano"]{
+    --forest:#3A6EA5; --forest-dark:#1B3B5C; --gold:#4FC1C7; --gold-dark:#2E8A90; --blush:#A9D6E5;
+    --forest-rgb:58,110,165; --forest-dark-rgb:27,59,92; --gold-rgb:79,193,199; --gold-dark-rgb:46,138,144; --blush-rgb:169,214,229;
+  }
+  html[data-theme="lavanda"]{
+    --forest:#7B5EA7; --forest-dark:#3C2E5C; --gold:#C98FE0; --gold-dark:#9B5FC0; --blush:#E7C9EE;
+    --forest-rgb:123,94,167; --forest-dark-rgb:60,46,92; --gold-rgb:201,143,224; --gold-dark-rgb:155,95,192; --blush-rgb:231,201,238;
+  }
+  html[data-theme="sunset"]{
+    --forest:#C1553A; --forest-dark:#6B2E1E; --gold:#F0A64D; --gold-dark:#D1852E; --blush:#F5C89A;
+    --forest-rgb:193,85,58; --forest-dark-rgb:107,46,30; --gold-rgb:240,166,77; --gold-dark-rgb:209,133,46; --blush-rgb:245,200,154;
+  }
+  html[data-theme="menta"]{
+    --forest:#2F8F72; --forest-dark:#154A3B; --gold:#8FD9BE; --gold-dark:#4FBE95; --blush:#C8ECD9;
+    --forest-rgb:47,143,114; --forest-dark-rgb:21,74,59; --gold-rgb:143,217,190; --gold-dark-rgb:79,190,149; --blush-rgb:200,236,217;
   }
   *{ box-sizing: border-box; }
   html,body{ margin:0; padding:0; }
@@ -53,9 +74,9 @@
     position: fixed; border-radius: 50%;
     filter: blur(90px); z-index: -1; pointer-events: none;
   }
-  .bg-blob.b1{ width:440px; height:440px; background: rgba(79,121,101,0.35); top:-140px; left:-120px; }
-  .bg-blob.b2{ width:400px; height:400px; background: rgba(216,163,77,0.35); top:15%; right:-160px; }
-  .bg-blob.b3{ width:380px; height:380px; background: rgba(232,175,163,0.4); bottom:-140px; left:12%; }
+  .bg-blob.b1{ width:440px; height:440px; background: rgba(var(--forest-rgb),0.35); top:-140px; left:-120px; }
+  .bg-blob.b2{ width:400px; height:400px; background: rgba(var(--gold-rgb),0.35); top:15%; right:-160px; }
+  .bg-blob.b3{ width:380px; height:380px; background: rgba(var(--blush-rgb),0.4); bottom:-140px; left:12%; }
 
   /* ---------- lock screen ---------- */
   #lock-screen{
@@ -70,8 +91,8 @@
   #lock-screen::before, #lock-screen::after{
     content:""; position:absolute; border-radius:50%; filter: blur(80px);
   }
-  #lock-screen::before{ width:360px; height:360px; background: rgba(216,163,77,0.28); top:-100px; right:-80px; }
-  #lock-screen::after{ width:320px; height:320px; background: rgba(79,121,101,0.4); bottom:-100px; left:-60px; }
+  #lock-screen::before{ width:360px; height:360px; background: rgba(var(--gold-rgb),0.28); top:-100px; right:-80px; }
+  #lock-screen::after{ width:320px; height:320px; background: rgba(var(--forest-rgb),0.4); bottom:-100px; left:-60px; }
   .lock-card{
     background: rgba(255,255,255,0.14);
     backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
@@ -87,10 +108,10 @@
   .lock-stamp{
     width: 64px; height:64px; margin: 0 auto 18px;
     border-radius: 50%;
-    border: 2px dashed rgba(216,163,77,0.7);
+    border: 2px dashed rgba(var(--gold-rgb),0.7);
     display:flex; align-items:center; justify-content:center;
     font-size: 30px;
-    background: rgba(216,163,77,0.18);
+    background: rgba(var(--gold-rgb),0.18);
   }
   .lock-card h1{ font-size: 1.6rem; font-style: italic; color: var(--paper); }
   .lock-card p{ margin: 8px 0 22px; color: rgba(250,243,229,0.72); font-size: 0.92rem; }
@@ -130,9 +151,9 @@
   }
   .btn:hover{ transform: translateY(-1px); }
   .btn-primary{ background: var(--forest); color: var(--paper); }
-  .btn-primary:hover{ box-shadow: 0 8px 20px rgba(79,121,101,0.4); }
+  .btn-primary:hover{ box-shadow: 0 8px 20px rgba(var(--forest-rgb),0.4); }
   .btn-gold{ background: var(--gold); color: var(--forest-dark); }
-  .btn-gold:hover{ box-shadow: 0 8px 20px rgba(216,163,77,0.45); }
+  .btn-gold:hover{ box-shadow: 0 8px 20px rgba(var(--gold-rgb),0.45); }
   .btn-ghost{
     background: rgba(255,255,255,0.4);
     backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
@@ -143,7 +164,7 @@
   /* ---------- app shell ---------- */
   #app{ display:none; min-height:100vh; max-width: 800px; margin:0 auto; padding: 22px 16px 60px; position:relative; z-index:1; }
   header.hero{
-    background: rgba(31,59,47,0.55);
+    background: rgba(var(--forest-dark-rgb),0.55);
     backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
     border: 1px solid rgba(255,255,255,0.18);
     color: var(--paper);
@@ -151,7 +172,7 @@
     border-radius: 28px;
     position: relative;
     overflow:hidden;
-    box-shadow: 0 16px 40px rgba(31,59,47,0.22), inset 0 1px rgba(255,255,255,0.15);
+    box-shadow: 0 16px 40px rgba(var(--forest-dark-rgb),0.22), inset 0 1px rgba(255,255,255,0.15);
     margin-bottom: 20px;
   }
   header.hero::after{
@@ -197,7 +218,7 @@
     border-radius:999px; padding:7px 14px;
     font-size:0.8rem; color: var(--ink);
   }
-  .filter-chip.selected{ border-color: var(--gold-dark); background: rgba(216,163,77,0.32); font-weight:700; }
+  .filter-chip.selected{ border-color: var(--gold-dark); background: rgba(var(--gold-rgb),0.32); font-weight:700; }
 
   .heatmap-section{
     margin-bottom: 22px;
@@ -212,12 +233,42 @@
   .heatmap-wrap{ overflow-x:auto; padding-bottom:4px; }
   .heatmap-grid{ display:flex; gap:3px; width:max-content; }
   .heatmap-col{ display:flex; flex-direction:column; gap:3px; }
-  .heatmap-cell{ width:12px; height:12px; border-radius:3px; background: rgba(31,59,47,0.12); cursor:pointer; }
+  .heatmap-cell{ width:12px; height:12px; border-radius:3px; background: rgba(var(--forest-dark-rgb),0.12); cursor:pointer; }
   .heatmap-cell.empty{ visibility:hidden; cursor:default; }
-  .heatmap-cell.level-1{ background: rgba(79,121,101,0.4); }
-  .heatmap-cell.level-2{ background: rgba(79,121,101,0.7); }
+  .heatmap-cell.level-1{ background: rgba(var(--forest-rgb),0.4); }
+  .heatmap-cell.level-2{ background: rgba(var(--forest-rgb),0.7); }
   .heatmap-cell.level-3{ background: var(--forest); }
   .heatmap-cell.active{ outline: 2px solid var(--gold-dark); outline-offset:1px; }
+
+  .collection-bar{ height:8px; border-radius:999px; background: rgba(var(--forest-dark-rgb),0.12); overflow:hidden; margin: 8px 0 12px; }
+  .collection-bar-fill{ height:100%; background: linear-gradient(90deg, var(--gold), var(--forest)); border-radius:999px; transition: width 0.4s ease; }
+  .collection-icons{ display:flex; flex-wrap:wrap; gap:8px; }
+  .collection-stamp{
+    width:38px; height:38px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:17px;
+    background: rgba(var(--forest-dark-rgb),0.05); filter: grayscale(1); opacity:0.35;
+    border: 1.5px dashed rgba(var(--forest-dark-rgb),0.18);
+  }
+  .collection-stamp.got{ filter:none; opacity:1; background: rgba(var(--gold-rgb),0.2); border-color: var(--gold-dark); }
+
+  .btn-sm{ padding: 8px 14px; font-size: 0.82rem; margin-top: 8px; }
+  .btn-ghost.recording{ background: rgba(181,71,58,0.16); color:#B5473A; border-color:#B5473A; }
+  #audio-preview audio, .entry-audio{ width:100%; margin-top:6px; }
+  .entry-audio{ margin-top:14px; }
+
+  .settings-section{ margin-bottom:22px; }
+  .settings-section > label{ display:block; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.06em; color: var(--forest-dark); margin-bottom:8px; }
+  .theme-swatches{ display:flex; gap:10px; flex-wrap:wrap; }
+  .theme-swatch{ width:36px; height:36px; border-radius:50%; border:2px solid rgba(255,255,255,0.85); box-shadow:0 2px 8px rgba(0,0,0,0.18); }
+  .theme-swatch.selected{ outline:3px solid var(--forest-dark); outline-offset:2px; }
+  .widget-order-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:9px 12px; background: rgba(255,255,255,0.5);
+    border-radius:12px; margin-bottom:6px; font-size:0.88rem;
+  }
+  .widget-order-controls{ display:flex; gap:2px; }
+  .widget-order-controls .icon-btn{ font-size:0.85rem; }
+  .widget-order-controls .icon-btn:disabled{ opacity:0.3; }
 
   #setup-banner{
     display:none;
@@ -235,7 +286,7 @@
     text-align:center; padding: 60px 20px;
     color: rgba(38,58,56,0.6);
   }
-  #empty-state .lock-stamp{ margin-bottom: 14px; border-color: var(--gold-dark); background: rgba(216,163,77,0.14); }
+  #empty-state .lock-stamp{ margin-bottom: 14px; border-color: var(--gold-dark); background: rgba(var(--gold-rgb),0.14); }
   #empty-state h3{ color: var(--forest-dark); font-size:1.2rem; margin-bottom:6px; }
 
   /* ---------- timeline / cards ---------- */
@@ -258,7 +309,7 @@
     flex: 0 0 auto;
     width: 54px; height:54px; border-radius:50%;
     border: 2px dashed var(--gold-dark);
-    background: rgba(216,163,77,0.18);
+    background: rgba(var(--gold-rgb),0.18);
     display:flex; align-items:center; justify-content:center;
     font-size:24px;
   }
@@ -300,7 +351,7 @@
   /* ---------- modal ---------- */
   .modal-overlay{
     display:none;
-    position: fixed; inset:0; background: rgba(31,59,47,0.4);
+    position: fixed; inset:0; background: rgba(var(--forest-dark-rgb),0.4);
     backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
     align-items:flex-end; justify-content:center;
     z-index: 40; padding: 0;
@@ -314,7 +365,7 @@
     border-radius: 26px 26px 0 0;
     padding: 26px 22px 32px;
     animation: slideup 0.25s ease;
-    box-shadow: 0 -10px 40px rgba(31,59,47,0.2);
+    box-shadow: 0 -10px 40px rgba(var(--forest-dark-rgb),0.2);
   }
   @media (min-width: 620px){
     .modal-overlay{ align-items:center; }
@@ -342,10 +393,10 @@
     font-size: 0.85rem;
     display:flex; align-items:center; gap:6px;
   }
-  .badge-chip.selected{ border-color: var(--gold-dark); background: rgba(216,163,77,0.28); }
+  .badge-chip.selected{ border-color: var(--gold-dark); background: rgba(var(--gold-rgb),0.28); }
 
   .file-drop{
-    border: 1.5px dashed rgba(31,59,47,0.25);
+    border: 1.5px dashed rgba(var(--forest-dark-rgb),0.25);
     border-radius: 16px; padding: 16px; text-align:center;
     font-size:0.85rem; color: rgba(38,58,56,0.65);
     background: rgba(255,255,255,0.4);
@@ -381,7 +432,7 @@
   /* ---------- toast ---------- */
   #toast{
     position: fixed; left:50%; bottom:24px; transform: translateX(-50%) translateY(20px);
-    background: rgba(31,59,47,0.75);
+    background: rgba(var(--forest-dark-rgb),0.75);
     backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255,255,255,0.15);
     color: var(--paper);
@@ -436,6 +487,10 @@
             <div class="num mono" id="stat-age">-</div>
             <div class="lbl">Idade do Be</div>
           </div>
+          <div class="stat" id="streak-stat-wrap" style="display:none;">
+            <div class="num mono" id="stat-streak">-</div>
+            <div class="lbl">Sequência</div>
+          </div>
         </div>
       </div>
     </header>
@@ -463,7 +518,9 @@
 
       <div class="filter-chips" id="filter-chips"></div>
 
-      <div class="heatmap-section">
+      <div class="heatmap-section" id="badge-collection"></div>
+
+      <div class="heatmap-section" id="widget-heatmap">
         <div class="heatmap-label">Dias com registro</div>
         <div class="heatmap-wrap" id="heatmap-wrap"></div>
       </div>
@@ -485,7 +542,7 @@
   <!-- ---------- modal: new entry ---------- -->
   <div class="modal-overlay" id="modal-overlay">
     <div class="modal">
-      <h2>Registrar conquista</h2>
+      <h2 id="modal-title">Registrar conquista</h2>
       <form id="entry-form">
         <div class="field">
           <label for="f-date">Quando aconteceu</label>
@@ -507,6 +564,12 @@
         <div class="field">
           <label for="f-note">O que ele fez, como fez</label>
           <textarea id="f-note" placeholder="Conta os detalhes dessa conquista..."></textarea>
+          <button type="button" class="btn btn-ghost btn-sm" id="suggest-btn">✨ Sugerir frase</button>
+        </div>
+        <div class="field">
+          <label>Áudio (opcional)</label>
+          <button type="button" class="btn btn-ghost btn-block" id="record-btn">🎙️ Gravar áudio</button>
+          <div id="audio-preview" style="margin-top:10px;"></div>
         </div>
         <div class="field">
           <label>Fotos (opcional)</label>
@@ -528,6 +591,17 @@
   <div class="modal-overlay" id="settings-overlay">
     <div class="modal">
       <h2>Ajustes</h2>
+
+      <div class="settings-section">
+        <label>Cor do app</label>
+        <div class="theme-swatches" id="theme-swatches"></div>
+      </div>
+
+      <div class="settings-section">
+        <label>Ordem dos blocos</label>
+        <div id="widget-order-list"></div>
+      </div>
+
       <form id="settings-form">
         <div class="field">
           <label for="f-birth-date">Data de nascimento do Be</label>
@@ -535,7 +609,7 @@
         </div>
         <p class="field-hint">Usada só pra calcular a idade do Be em cada conquista. Fica salva pra você e a Nathy verem igual.</p>
         <div class="modal-actions">
-          <button type="button" class="btn btn-ghost" id="settings-cancel-btn">Cancelar</button>
+          <button type="button" class="btn btn-ghost" id="settings-cancel-btn">Fechar</button>
           <button type="submit" class="btn btn-primary">Salvar</button>
         </div>
       </form>
@@ -581,11 +655,115 @@ const BADGES = [
 let entries = [];
 let selectedBadge = null;
 let selectedFiles = [];
+let existingPhotoUrls = [];
 let babyBirthDate = null;
 let activeBadgeFilter = null;
 let showFavoritesOnly = false;
 let searchQuery = '';
 let activeDayFilter = null;
+let editingEntryId = null;
+let mediaRecorder = null;
+let audioChunks = [];
+let recordedAudioBlob = null;
+let existingAudioUrl = null;
+let recordingStartTime = null;
+let recordingTimerInterval = null;
+
+/* ---------- preferências de aparência (só neste aparelho) ---------- */
+const PREFS_KEY = 'be_diario_prefs';
+const THEMES = [
+  { id:'floresta', label:'Floresta',   c1:'#4F7965', c2:'#D8A34D' },
+  { id:'oceano',   label:'Oceano',     c1:'#3A6EA5', c2:'#4FC1C7' },
+  { id:'lavanda',  label:'Lavanda',    c1:'#7B5EA7', c2:'#C98FE0' },
+  { id:'sunset',   label:'Pôr do sol', c1:'#C1553A', c2:'#F0A64D' },
+  { id:'menta',    label:'Menta',      c1:'#2F8F72', c2:'#8FD9BE' },
+];
+const WIDGET_LABELS = { filters:'Filtros', collection:'Coleção de selos', heatmap:'Calendário' };
+const WIDGET_ELS = { filters:'filter-chips', collection:'badge-collection', heatmap:'widget-heatmap' };
+
+let currentTheme = 'floresta';
+let widgetOrder = ['filters', 'collection', 'heatmap'];
+let hiddenWidgets = [];
+
+function loadPrefs(){
+  try{
+    const raw = localStorage.getItem(PREFS_KEY);
+    if(raw){
+      const p = JSON.parse(raw);
+      if(p.theme) currentTheme = p.theme;
+      if(Array.isArray(p.widgetOrder) && p.widgetOrder.length === 3) widgetOrder = p.widgetOrder;
+      if(Array.isArray(p.hiddenWidgets)) hiddenWidgets = p.hiddenWidgets;
+    }
+  }catch(err){ console.warn('Não consegui carregar as preferências salvas:', err); }
+  if(currentTheme !== 'floresta') document.documentElement.setAttribute('data-theme', currentTheme);
+}
+function savePrefs(){
+  try{ localStorage.setItem(PREFS_KEY, JSON.stringify({ theme: currentTheme, widgetOrder, hiddenWidgets })); }
+  catch(err){ console.warn('Não consegui salvar as preferências:', err); }
+}
+function applyTheme(themeId){
+  currentTheme = themeId;
+  if(themeId === 'floresta') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', themeId);
+  savePrefs();
+  renderThemeSwatches();
+}
+function renderThemeSwatches(){
+  const wrap = document.getElementById('theme-swatches');
+  wrap.innerHTML = THEMES.map(t=>
+    `<button type="button" class="theme-swatch${currentTheme === t.id ? ' selected' : ''}" data-theme="${t.id}" title="${t.label}" style="background: linear-gradient(135deg, ${t.c1}, ${t.c2});"></button>`
+  ).join('');
+  wrap.querySelectorAll('.theme-swatch').forEach(btn=>{
+    btn.addEventListener('click', ()=> applyTheme(btn.dataset.theme));
+  });
+}
+function applyWidgetOrder(){
+  const anchor = document.getElementById('empty-state');
+  widgetOrder.forEach(key=>{
+    const el = document.getElementById(WIDGET_ELS[key]);
+    if(el) anchor.parentNode.insertBefore(el, anchor);
+  });
+  Object.keys(WIDGET_ELS).forEach(key=>{
+    const el = document.getElementById(WIDGET_ELS[key]);
+    if(el) el.style.display = hiddenWidgets.includes(key) ? 'none' : '';
+  });
+}
+function moveWidget(key, dir){
+  const idx = widgetOrder.indexOf(key);
+  const newIdx = idx + dir;
+  if(newIdx < 0 || newIdx >= widgetOrder.length) return;
+  [widgetOrder[idx], widgetOrder[newIdx]] = [widgetOrder[newIdx], widgetOrder[idx]];
+  applyWidgetOrder();
+  renderWidgetOrderList();
+  savePrefs();
+}
+function toggleWidget(key){
+  const i = hiddenWidgets.indexOf(key);
+  if(i === -1) hiddenWidgets.push(key); else hiddenWidgets.splice(i, 1);
+  applyWidgetOrder();
+  renderWidgetOrderList();
+  savePrefs();
+}
+function renderWidgetOrderList(){
+  const wrap = document.getElementById('widget-order-list');
+  wrap.innerHTML = widgetOrder.map((key, idx)=>{
+    const hidden = hiddenWidgets.includes(key);
+    return `
+      <div class="widget-order-row">
+        <span>${WIDGET_LABELS[key]}</span>
+        <div class="widget-order-controls">
+          <button type="button" class="icon-btn" data-action="up" data-key="${key}" ${idx === 0 ? 'disabled' : ''}>↑</button>
+          <button type="button" class="icon-btn" data-action="down" data-key="${key}" ${idx === widgetOrder.length - 1 ? 'disabled' : ''}>↓</button>
+          <button type="button" class="icon-btn" data-action="toggle" data-key="${key}">${hidden ? '👁️ Mostrar' : '🙈 Esconder'}</button>
+        </div>
+      </div>`;
+  }).join('');
+  wrap.querySelectorAll('[data-action="up"]').forEach(btn=> btn.addEventListener('click', ()=> moveWidget(btn.dataset.key, -1)));
+  wrap.querySelectorAll('[data-action="down"]').forEach(btn=> btn.addEventListener('click', ()=> moveWidget(btn.dataset.key, 1)));
+  wrap.querySelectorAll('[data-action="toggle"]').forEach(btn=> btn.addEventListener('click', ()=> toggleWidget(btn.dataset.key)));
+}
+loadPrefs();
+applyWidgetOrder();
 
 /* ---------- helpers ---------- */
 function escapeHTML(str){
@@ -672,20 +850,49 @@ BADGES.forEach(b=>{
   badgeGrid.appendChild(chip);
 });
 
-/* ---------- modal open/close: nova conquista ---------- */
+/* ---------- modal open/close: nova conquista / editar ---------- */
 const overlay = document.getElementById('modal-overlay');
-function openModal(){
+function openModal(entry){
   document.getElementById('entry-form').reset();
-  document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
+  editingEntryId = entry ? entry.id : null;
+  document.getElementById('modal-title').textContent = entry ? 'Editar conquista' : 'Registrar conquista';
+  document.getElementById('save-btn').textContent = 'Salvar';
+  document.getElementById('f-date').value = entry ? entry.entry_date : new Date().toISOString().slice(0,10);
+  document.getElementById('f-author').value = entry ? (entry.author || '') : '';
+  document.getElementById('f-title').value = entry ? entry.title : '';
+  document.getElementById('f-note').value = entry ? (entry.note || '') : '';
+
   document.querySelectorAll('#badge-grid .badge-chip').forEach(c=> c.classList.remove('selected'));
   document.getElementById('f-badge-custom').style.display = 'none';
-  selectedBadge = null;
+  document.getElementById('f-badge-custom').value = '';
+  if(entry){
+    const known = BADGES.some(b=> b.id === entry.badge);
+    selectedBadge = known ? entry.badge : 'outra';
+    const chip = document.querySelector(`#badge-grid .badge-chip[data-id="${selectedBadge}"]`);
+    if(chip) chip.classList.add('selected');
+    if(!known){
+      document.getElementById('f-badge-custom').style.display = 'block';
+      document.getElementById('f-badge-custom').value = entry.badge;
+    }
+  } else {
+    selectedBadge = null;
+  }
+
   selectedFiles = [];
-  document.getElementById('preview-row').innerHTML = '';
+  existingPhotoUrls = entry ? [...(entry.photos || [])] : [];
+  renderPreviewRow();
+
+  recordedAudioBlob = null;
+  existingAudioUrl = entry ? (entry.audio_url || null) : null;
+  renderAudioPreview();
+
   overlay.style.display = 'flex';
 }
-function closeModal(){ overlay.style.display = 'none'; }
-document.getElementById('open-modal-btn').addEventListener('click', openModal);
+function closeModal(){
+  if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+  overlay.style.display = 'none';
+}
+document.getElementById('open-modal-btn').addEventListener('click', ()=> openModal());
 document.getElementById('cancel-btn').addEventListener('click', closeModal);
 overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModal(); });
 
@@ -693,6 +900,8 @@ overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModal(); 
 const settingsOverlay = document.getElementById('settings-overlay');
 document.getElementById('settings-btn').addEventListener('click', ()=>{
   document.getElementById('f-birth-date').value = babyBirthDate || '';
+  renderThemeSwatches();
+  renderWidgetOrderList();
   settingsOverlay.style.display = 'flex';
 });
 document.getElementById('settings-cancel-btn').addEventListener('click', ()=> settingsOverlay.style.display = 'none');
@@ -721,25 +930,114 @@ document.getElementById('search-input').addEventListener('input', (e)=>{
 });
 
 /* ---------- photo picker ---------- */
-document.getElementById('f-photos').addEventListener('change', (e)=>{
-  const files = Array.from(e.target.files);
-  files.forEach(file=>{
-    selectedFiles.push(file);
-    const reader = new FileReader();
-    reader.onload = (ev)=>{
-      const item = document.createElement('div');
-      item.className = 'preview-item';
-      item.innerHTML = `<img src="${ev.target.result}" alt="Prévia da foto"><button type="button">✕</button>`;
-      item.querySelector('button').addEventListener('click', ()=>{
-        selectedFiles = selectedFiles.filter(f=> f !== file);
-        item.remove();
-      });
-      document.getElementById('preview-row').appendChild(item);
-    };
-    reader.readAsDataURL(file);
+function renderPreviewRow(){
+  const wrap = document.getElementById('preview-row');
+  wrap.innerHTML = '';
+  existingPhotoUrls.forEach((url, idx)=>{
+    const item = document.createElement('div');
+    item.className = 'preview-item';
+    item.innerHTML = `<img src="${url}" alt="Foto já salva"><button type="button">✕</button>`;
+    item.querySelector('button').addEventListener('click', ()=>{
+      existingPhotoUrls.splice(idx, 1);
+      renderPreviewRow();
+    });
+    wrap.appendChild(item);
   });
+  selectedFiles.forEach((file, idx)=>{
+    const url = URL.createObjectURL(file);
+    const item = document.createElement('div');
+    item.className = 'preview-item';
+    item.innerHTML = `<img src="${url}" alt="Prévia da foto"><button type="button">✕</button>`;
+    item.querySelector('button').addEventListener('click', ()=>{
+      selectedFiles.splice(idx, 1);
+      renderPreviewRow();
+    });
+    wrap.appendChild(item);
+  });
+}
+document.getElementById('f-photos').addEventListener('change', (e)=>{
+  selectedFiles.push(...Array.from(e.target.files));
+  renderPreviewRow();
   e.target.value = '';
 });
+
+/* ---------- gravação de áudio ---------- */
+function renderAudioPreview(){
+  const wrap = document.getElementById('audio-preview');
+  if(recordedAudioBlob){
+    const url = URL.createObjectURL(recordedAudioBlob);
+    wrap.innerHTML = `<audio controls src="${url}"></audio><button type="button" class="icon-btn" id="remove-audio-btn">Remover áudio</button>`;
+    document.getElementById('remove-audio-btn').addEventListener('click', ()=>{ recordedAudioBlob = null; renderAudioPreview(); });
+  } else if(existingAudioUrl){
+    wrap.innerHTML = `<audio controls src="${existingAudioUrl}"></audio><button type="button" class="icon-btn" id="remove-audio-btn">Remover áudio</button>`;
+    document.getElementById('remove-audio-btn').addEventListener('click', ()=>{ existingAudioUrl = null; renderAudioPreview(); });
+  } else {
+    wrap.innerHTML = '';
+  }
+}
+function updateRecordingTimer(){
+  const secs = Math.floor((Date.now() - recordingStartTime) / 1000);
+  const mm = String(Math.floor(secs / 60)).padStart(2, '0');
+  const ss = String(secs % 60).padStart(2, '0');
+  document.getElementById('record-btn').textContent = `⏹️ Parar (${mm}:${ss})`;
+}
+async function startRecording(){
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+    mediaRecorder.ondataavailable = (e)=> audioChunks.push(e.data);
+    mediaRecorder.onstop = ()=>{
+      recordedAudioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+      existingAudioUrl = null;
+      renderAudioPreview();
+      stream.getTracks().forEach(t=> t.stop());
+    };
+    mediaRecorder.start();
+    recordingStartTime = Date.now();
+    document.getElementById('record-btn').classList.add('recording');
+    recordingTimerInterval = setInterval(updateRecordingTimer, 500);
+    updateRecordingTimer();
+  }catch(err){
+    console.error('Erro ao acessar o microfone:', err);
+    showToast('Não consegui acessar o microfone.');
+  }
+}
+function stopRecording(){
+  if(mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+  clearInterval(recordingTimerInterval);
+  document.getElementById('record-btn').classList.remove('recording');
+  document.getElementById('record-btn').textContent = '🎙️ Gravar áudio';
+}
+document.getElementById('record-btn').addEventListener('click', ()=>{
+  if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+  else startRecording();
+});
+
+/* ---------- sugestão de frase (Pollinations AI) ---------- */
+async function suggestNote(){
+  const title = document.getElementById('f-title').value.trim();
+  if(!title){ showToast('Escreve um título primeiro.'); return; }
+  const badgeLabel = !selectedBadge ? 'uma conquista nova'
+    : (selectedBadge === 'outra' ? (document.getElementById('f-badge-custom').value.trim() || 'uma conquista nova') : badgeInfo(selectedBadge).label);
+  const btn = document.getElementById('suggest-btn');
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Pensando...';
+  try{
+    const prompt = `Escreva em português do Brasil uma frase curta e carinhosa (no máximo 25 palavras), sem aspas, contando que um bebê de 2 anos chamado Be acabou de: ${title} (${badgeLabel}). Escreva como um recado fofo de diário de família, direto, sem introdução.`;
+    const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
+    const text = (await res.text()).trim();
+    if(text) document.getElementById('f-note').value = text;
+  }catch(err){
+    console.error('Erro ao sugerir frase:', err);
+    showToast('Não consegui pensar numa frase agora.');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = original;
+  }
+}
+document.getElementById('suggest-btn').addEventListener('click', suggestNote);
 
 /* ---------- lightbox ---------- */
 const lightbox = document.getElementById('lightbox');
@@ -855,10 +1153,59 @@ function renderAgeStat(){
   }
 }
 
+/* ---------- sequência de dias ---------- */
+function calcStreak(){
+  if(!entries.length) return 0;
+  const dates = new Set(entries.map(e=> e.entry_date));
+  const cursor = new Date(); cursor.setHours(0,0,0,0);
+  let iso = cursor.toISOString().slice(0,10);
+  if(!dates.has(iso)){
+    cursor.setDate(cursor.getDate() - 1);
+    iso = cursor.toISOString().slice(0,10);
+    if(!dates.has(iso)) return 0;
+  }
+  let streak = 0;
+  while(dates.has(iso)){
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+    iso = cursor.toISOString().slice(0,10);
+  }
+  return streak;
+}
+function renderStreakStat(){
+  const streak = calcStreak();
+  const wrap = document.getElementById('streak-stat-wrap');
+  if(streak > 0){
+    document.getElementById('stat-streak').textContent = '🔥 ' + streak;
+    wrap.style.display = '';
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+
+/* ---------- coleção de selos ---------- */
+function renderBadgeCollection(){
+  const collectible = BADGES.filter(b=> b.id !== 'outra');
+  const collectedIds = new Set(entries.map(e=> e.badge).filter(id=> collectible.some(b=> b.id === id)));
+  const total = collectible.length;
+  const got = collectedIds.size;
+  const pct = Math.round((got / total) * 100);
+  const icons = collectible.map(b=>
+    `<div class="collection-stamp${collectedIds.has(b.id) ? ' got' : ''}" title="${b.label}">${b.emoji}</div>`
+  ).join('');
+  document.getElementById('badge-collection').innerHTML = `
+    <div class="heatmap-label">Coleção de selos, ${got} de ${total}</div>
+    <div class="collection-bar"><div class="collection-bar-fill" style="width:${pct}%"></div></div>
+    <div class="collection-icons">${icons}</div>
+  `;
+}
+
 /* ---------- rendering ---------- */
 function render(){
   document.getElementById('stat-count').textContent = entries.length;
+  renderStreakStat();
   renderFilters();
+  renderBadgeCollection();
   renderHeatmap();
 
   const list = getFilteredEntries();
@@ -878,6 +1225,7 @@ function render(){
     card.innerHTML = `
       <div class="entry-actions">
         <button class="icon-btn star-btn${entry.favorite ? ' active' : ''}" data-action="star" title="Favoritar">${entry.favorite ? '★' : '☆'}</button>
+        <button class="icon-btn" data-action="edit" title="Editar">✎</button>
         <button class="icon-btn" data-action="share" title="Compartilhar no WhatsApp">↗</button>
         <button class="icon-btn" data-action="delete" title="Excluir">Excluir</button>
       </div>
@@ -890,9 +1238,11 @@ function render(){
         </div>
       </div>
       ${entry.note ? `<div class="entry-note">${escapeHTML(entry.note)}</div>` : ''}
+      ${entry.audio_url ? `<audio class="entry-audio" controls src="${entry.audio_url}"></audio>` : ''}
       ${photosHTML ? `<div class="photo-row">${photosHTML}</div>` : ''}
     `;
     card.querySelector('[data-action="star"]').addEventListener('click', ()=> toggleFavorite(entry.id));
+    card.querySelector('[data-action="edit"]').addEventListener('click', ()=> openModal(entry));
     card.querySelector('[data-action="share"]').addEventListener('click', ()=> shareEntry(entry));
     card.querySelector('[data-action="delete"]').addEventListener('click', (e)=> handleDeleteClick(e.target, entry.id));
     timeline.appendChild(card);
@@ -974,10 +1324,20 @@ function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight){
   return y + lineHeight;
 }
 
+function getThemeColors(){
+  const cs = getComputedStyle(document.documentElement);
+  return {
+    forest: (cs.getPropertyValue('--forest') || '#4F7965').trim(),
+    forestDark: (cs.getPropertyValue('--forest-dark') || '#1F3B2F').trim(),
+    gold: (cs.getPropertyValue('--gold') || '#D8A34D').trim(),
+  };
+}
+
 async function shareEntry(entry){
   showToast('Gerando imagem...');
   try{
     if(document.fonts && document.fonts.ready) await document.fonts.ready;
+    const theme = getThemeColors();
     const W = 1080, H = 1350;
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
@@ -986,9 +1346,9 @@ async function shareEntry(entry){
     ctx.fillStyle = '#FAF3E5';
     ctx.fillRect(0, 0, W, H);
 
-    ctx.fillStyle = '#1F3B2F';
+    ctx.fillStyle = theme.forestDark;
     ctx.fillRect(0, 0, W, 220);
-    ctx.fillStyle = '#D8A34D';
+    ctx.fillStyle = theme.gold;
     ctx.font = '700 30px Karla, sans-serif';
     ctx.fillText('DIÁRIO DO BE', 60, 90);
     ctx.fillStyle = '#FAF3E5';
@@ -999,7 +1359,7 @@ async function shareEntry(entry){
     ctx.save();
     ctx.beginPath();
     ctx.setLineDash([6,6]);
-    ctx.strokeStyle = '#D8A34D';
+    ctx.strokeStyle = theme.gold;
     ctx.lineWidth = 4;
     ctx.arc(W - 140, 110, 66, 0, Math.PI * 2);
     ctx.stroke();
@@ -1023,7 +1383,7 @@ async function shareEntry(entry){
       }
     }
 
-    ctx.fillStyle = '#4F7965';
+    ctx.fillStyle = theme.forest;
     ctx.font = '700 24px "Space Mono", monospace';
     let dateLine = formatDate(entry.entry_date).toUpperCase();
     const age = babyBirthDate ? calcAge(babyBirthDate, entry.entry_date) : null;
@@ -1031,7 +1391,7 @@ async function shareEntry(entry){
     ctx.fillText(dateLine, 60, cursorY);
     cursorY += 54;
 
-    ctx.fillStyle = '#1F3B2F';
+    ctx.fillStyle = theme.forestDark;
     ctx.font = '600 44px Fraunces, serif';
     cursorY = wrapCanvasText(ctx, entry.title, 60, cursorY, W - 120, 52) + 16;
 
@@ -1069,6 +1429,69 @@ async function shareEntry(entry){
     console.error('Erro ao gerar imagem de compartilhamento:', err);
     showToast('Não consegui gerar a imagem agora.');
   }
+}
+
+/* ---------- comemoração ---------- */
+function playChime(){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [523.25, 659.25, 783.99].forEach((freq, i)=>{
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      const start = ctx.currentTime + i * 0.12;
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(0.15, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.35);
+      osc.start(start);
+      osc.stop(start + 0.4);
+    });
+  }catch(err){ console.warn('Não consegui tocar o som:', err); }
+}
+function spawnConfetti(){
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;inset:0;z-index:80;pointer-events:none;';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  const theme = getThemeColors();
+  const colors = [theme.forest, theme.gold, '#E8AFA3', theme.forestDark, '#FAF3E5'];
+  const particles = Array.from({ length: 110 }, ()=> ({
+    x: Math.random() * canvas.width,
+    y: -20 - Math.random() * canvas.height * 0.3,
+    r: 4 + Math.random() * 5,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    vy: 2 + Math.random() * 3,
+    vx: -1.5 + Math.random() * 3,
+    rot: Math.random() * 360,
+    vr: -6 + Math.random() * 12,
+  }));
+  let frame = 0;
+  function tick(){
+    frame++;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p=>{
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 0.6);
+      ctx.restore();
+    });
+    if(frame < 130) requestAnimationFrame(tick);
+    else canvas.remove();
+  }
+  tick();
+}
+function celebrate(){
+  playChime();
+  const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduced) spawnConfetti();
 }
 
 /* ---------- data layer ---------- */
@@ -1115,6 +1538,7 @@ document.getElementById('entry-form').addEventListener('submit', async (e)=>{
   e.preventDefault();
   if(!isConfigured){ showToast('Configure o Supabase antes de salvar.'); return; }
   if(!selectedBadge){ showToast('Escolha o tipo de conquista.'); return; }
+  if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
 
   const saveBtn = document.getElementById('save-btn');
   saveBtn.textContent = 'Salvando...';
@@ -1124,21 +1548,44 @@ document.getElementById('entry-form').addEventListener('submit', async (e)=>{
     ? (document.getElementById('f-badge-custom').value.trim() || 'Outra conquista')
     : selectedBadge;
 
-  const entryId = crypto.randomUUID();
-  const photoUrls = selectedFiles.length ? await uploadPhotos(selectedFiles, entryId) : [];
+  const isEditing = !!editingEntryId;
+  const entryId = isEditing ? editingEntryId : crypto.randomUUID();
 
-  const newEntry = {
-    id: entryId,
+  const newPhotoUrls = selectedFiles.length ? await uploadPhotos(selectedFiles, entryId) : [];
+  const finalPhotos = [...existingPhotoUrls, ...newPhotoUrls];
+
+  let audioUrl = existingAudioUrl;
+  if(recordedAudioBlob){
+    const path = `audio/${entryId}-${Date.now()}.webm`;
+    const { error: audioErr } = await sb.storage.from('be-photos').upload(path, recordedAudioBlob);
+    if(audioErr){
+      console.error('Erro ao enviar áudio:', audioErr);
+      showToast('Não consegui enviar o áudio (rodou o atualizar-supabase.sql mais recente?).');
+    } else {
+      const { data } = sb.storage.from('be-photos').getPublicUrl(path);
+      audioUrl = data.publicUrl;
+    }
+  }
+
+  const payload = {
     entry_date: document.getElementById('f-date').value,
     title: document.getElementById('f-title').value.trim(),
     badge: badgeValue,
     note: document.getElementById('f-note').value.trim(),
     author: document.getElementById('f-author').value.trim(),
-    photos: photoUrls,
-    favorite: false,
+    photos: finalPhotos,
+    audio_url: audioUrl,
   };
 
-  const { error } = await sb.from('be_entries').insert(newEntry);
+  let error;
+  if(isEditing){
+    ({ error } = await sb.from('be_entries').update(payload).eq('id', entryId));
+  } else {
+    payload.id = entryId;
+    payload.favorite = false;
+    ({ error } = await sb.from('be_entries').insert(payload));
+  }
+
   saveBtn.textContent = 'Salvar';
   saveBtn.disabled = false;
 
@@ -1148,10 +1595,19 @@ document.getElementById('entry-form').addEventListener('submit', async (e)=>{
     return;
   }
 
-  entries.unshift(newEntry);
-  render();
-  closeModal();
-  showToast('Conquista registrada!');
+  if(isEditing){
+    const idx = entries.findIndex(en=> en.id === entryId);
+    if(idx !== -1) entries[idx] = { ...entries[idx], ...payload };
+    render();
+    closeModal();
+    showToast('Conquista atualizada!');
+  } else {
+    entries.unshift(payload);
+    render();
+    closeModal();
+    celebrate();
+    showToast('Conquista registrada!');
+  }
 });
 
 /* ---------- realtime sync ---------- */
