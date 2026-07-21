@@ -582,6 +582,8 @@
   /* ---------- bichinho virtual ---------- */
   .pet-stage{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:20px; }
   .pet-character{ font-size:110px; }
+  .pet-character.thinking{ animation: pet-think 0.7s ease-in-out infinite; }
+  @keyframes pet-think{ 0%,100%{ transform: scale(1) rotate(0); } 50%{ transform: scale(1.08) rotate(-4deg); } }
   .pet-character.bounce{ animation: animal-bounce 0.5s ease; }
   .pet-accessories{ font-size:28px; }
   .pet-speech{
@@ -1975,10 +1977,11 @@ function speakPT(text){
   if('speechSynthesis' in window) speechSynthesis.cancel();
   const url = `https://text.pollinations.ai/${encodeURIComponent(text)}?model=openai-audio&voice=nova`;
   const audio = new Audio(url);
+  audio.preload = 'auto';
   let settled = false;
   const timer = setTimeout(()=>{
     if(!settled){ settled = true; if(myToken === speakToken) speakBrowserFallback(text); }
-  }, 3500);
+  }, 8000);
   audio.addEventListener('canplaythrough', ()=>{
     if(settled) return;
     settled = true;
@@ -1991,6 +1994,7 @@ function speakPT(text){
     clearTimeout(timer);
     if(myToken === speakToken) speakBrowserFallback(text);
   });
+  audio.load();
 }
 
 let gamesEntryPoint = null;
@@ -2382,32 +2386,64 @@ async function identifyFromCamera(){
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
   canvas.getContext('2d').drawImage(video, 0, 0);
-  const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-  document.getElementById('pet-speech').textContent = 'Deixa eu ver...';
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+  const btn = document.getElementById('pet-camera-btn');
+  const pet = document.getElementById('pet-character');
+  const speech = document.getElementById('pet-speech');
+  btn.disabled = true;
+  pet.classList.add('thinking');
+  speech.textContent = 'Deixa eu ver bem direitinho...';
+
+  async function askVision(){
+    const controller = new AbortController();
+    const timeoutId = setTimeout(()=> controller.abort(), 18000);
+    try{
+      const res = await fetch('https://text.pollinations.ai/openai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          model: 'openai-large',
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'text', text: 'Você é um bichinho de estimação fofo, esperto e observador, conversando com uma criança de 2 anos em português do Brasil, como se fosse uma videochamada. Olhe bem a imagem e diga em uma frase curta, animada e específica o que você reconhece de verdade nela (o objeto, animal, cor ou pessoa principal), tipo "Eu vejo uma bolinha vermelha, que legal!". Seja sincero sobre o que aparece na imagem, sem inventar. Responda só com a frase, sem explicações.' },
+              { type: 'image_url', image_url: { url: dataUrl } }
+            ]
+          }]
+        })
+      });
+      clearTimeout(timeoutId);
+      if(!res.ok) throw new Error('status ' + res.status);
+      const data = await res.json();
+      const text = data?.choices?.[0]?.message?.content?.trim();
+      if(!text) throw new Error('sem resposta');
+      return text;
+    }catch(err){
+      clearTimeout(timeoutId);
+      throw err;
+    }
+  }
+
+  let text = null;
   try{
-    const res = await fetch('https://text.pollinations.ai/openai', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'openai',
-        messages: [{
-          role: 'user',
-          content: [
-            { type: 'text', text: 'Você é um bichinho de estimação fofo conversando com uma criança de 2 anos em português do Brasil. Olhe a imagem e diga em uma frase bem curta e animada o que você está vendo, tipo "Eu vejo um cachorrinho fofo!". Sem explicação, só a frase.' },
-            { type: 'image_url', image_url: { url: dataUrl } }
-          ]
-        }]
-      })
-    });
-    const data = await res.json();
-    const text = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content ? data.choices[0].message.content.trim() : '';
-    if(!text) throw new Error('sem resposta');
-    document.getElementById('pet-speech').textContent = text;
+    text = await askVision();
+  }catch(err1){
+    console.warn('Primeira tentativa de identificar a imagem falhou, tentando de novo:', err1);
+    try{ text = await askVision(); }
+    catch(err2){ console.error('Não consegui identificar a imagem:', err2); }
+  }
+
+  pet.classList.remove('thinking');
+  btn.disabled = false;
+
+  if(text){
+    speech.textContent = text;
     speakPT(text);
     addCoins(2);
-  }catch(err){
-    console.error('Erro ao identificar imagem:', err);
-    document.getElementById('pet-speech').textContent = 'Hmm, não consegui ver direito. Tenta de novo!';
+  } else {
+    speech.textContent = 'Hmm, não consegui ver direito. Tenta apontar de novo, com mais luz!';
   }
   document.getElementById('pet-camera-btn').textContent = '📷 Mostra pra mim de novo!';
 }
