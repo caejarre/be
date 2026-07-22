@@ -580,20 +580,47 @@
   .piano-pad:active{ transform: scale(0.92); }
 
   /* ---------- bichinho virtual ---------- */
-  .pet-stage{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:20px; }
   .pet-character{ font-size:110px; }
   .pet-character.thinking{ animation: pet-think 0.7s ease-in-out infinite; }
   @keyframes pet-think{ 0%,100%{ transform: scale(1) rotate(0); } 50%{ transform: scale(1.08) rotate(-4deg); } }
   .pet-character.bounce{ animation: animal-bounce 0.5s ease; }
   .pet-accessories{ font-size:28px; }
-  .pet-speech{
-    background: rgba(255,255,255,0.75); border-radius:20px; padding:14px 20px;
-    font-size:1.05rem; font-weight:700; color:#4A3320; text-align:center; max-width:320px;
-    font-family:'Fraunces', serif;
+
+  /* ---------- bichinho: chamada de vídeo ---------- */
+  .call-wrap{ flex:1; display:flex; flex-direction:column; padding:12px 16px 20px; gap:12px; min-height:0; }
+  .call-video-frame{
+    position:relative; flex:1; min-height:200px; border-radius:26px; overflow:hidden;
+    background: #16281F;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.25);
   }
-  .pet-camera-wrap{ padding:0 16px 12px; }
-  .pet-camera-wrap video{ width:100%; border-radius:20px; box-shadow: 0 10px 26px rgba(0,0,0,0.2); }
-  .pet-actions{ padding:16px; }
+  .call-video-frame video{ width:100%; height:100%; object-fit:cover; display:block; }
+  .call-video-placeholder{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:10px; color:rgba(255,255,255,0.8); text-align:center; padding:24px;
+  }
+  .call-video-placeholder span:first-child{ font-size:2.6rem; }
+  .call-video-placeholder span:last-child{ font-size:0.9rem; max-width:240px; }
+  .call-status{
+    position:absolute; top:14px; left:14px; background: rgba(181,71,58,0.9); color:white;
+    font-size:0.7rem; font-weight:700; padding:5px 12px; border-radius:999px; letter-spacing:0.03em;
+    animation: call-blink 1.6s ease-in-out infinite;
+  }
+  @keyframes call-blink{ 0%,100%{ opacity:1; } 50%{ opacity:0.55; } }
+  .call-pet-bubble{
+    position:absolute; bottom:14px; right:14px; width:86px; height:86px; border-radius:50%;
+    background: rgba(255,255,255,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.28); border:3px solid white;
+  }
+  .call-pet-bubble .pet-character{ font-size:42px; }
+  .call-pet-bubble .pet-accessories{ font-size:13px; margin-top:-4px; }
+  .call-caption{
+    background: rgba(255,255,255,0.78); border-radius:18px; padding:12px 16px;
+    font-size:0.92rem; color:#4A3320; text-align:center; font-family:'Fraunces', serif;
+    min-height:1.4em; line-height:1.4;
+  }
+  .call-controls{ display:flex; flex-direction:column; gap:10px; }
+  .call-talk-btn.listening{ background:#B5473A; color:white; }
+  .call-talk-btn:disabled, .call-vision-btn:disabled{ opacity:0.55; }
 
   /* ---------- loja ---------- */
   .shop-hint{ text-align:center; font-size:0.9rem; color:#6B3F1D; padding:6px 20px 0; }
@@ -834,22 +861,31 @@
       <div class="piano-grid" id="piano-grid"></div>
     </div>
 
-    <!-- jogo: bichinho virtual -->
+    <!-- jogo: bichinho virtual (chamada de vídeo) -->
     <div class="game-screen" id="game-bichinho" style="background: linear-gradient(160deg,#FFE0F0,#E0F7FA);">
       <div class="game-top-bar">
         <button type="button" class="game-back-btn">← Voltar</button>
       </div>
-      <div class="pet-stage">
-        <div class="pet-character" id="pet-character">🐶</div>
-        <div class="pet-accessories" id="pet-accessories"></div>
-        <div class="pet-speech" id="pet-speech">Oi! Toca em mim!</div>
-      </div>
-      <div class="pet-camera-wrap" id="pet-camera-wrap" style="display:none;">
-        <video id="pet-video" autoplay playsinline muted></video>
-        <canvas id="pet-capture-canvas" style="display:none;"></canvas>
-      </div>
-      <div class="pet-actions">
-        <button type="button" class="btn btn-gold btn-block" id="pet-camera-btn">📷 Mostra pra mim!</button>
+      <div class="call-wrap" id="call-wrap">
+        <div class="call-video-frame" id="call-video-frame">
+          <video id="pet-video" autoplay playsinline muted></video>
+          <canvas id="pet-capture-canvas" style="display:none;"></canvas>
+          <div class="call-video-placeholder" id="call-video-placeholder">
+            <span>📞</span>
+            <span>Toque em "Iniciar chamada" pra ligar pro bichinho!</span>
+          </div>
+          <div class="call-status" id="call-status" style="display:none;">🔴 Ao vivo</div>
+          <div class="call-pet-bubble" id="call-pet-bubble">
+            <div class="pet-character" id="pet-character">🐶</div>
+            <div class="pet-accessories" id="pet-accessories"></div>
+          </div>
+        </div>
+        <div class="call-caption" id="call-caption">Toque em "Iniciar chamada" pra falar com o bichinho!</div>
+        <div class="call-controls">
+          <button type="button" class="btn btn-gold btn-block" id="call-toggle-btn">📞 Iniciar chamada</button>
+          <button type="button" class="btn btn-primary btn-block call-talk-btn" id="call-talk-btn" style="display:none;">🎤 Toque e fale</button>
+          <button type="button" class="btn btn-ghost btn-block" id="call-vision-btn" style="display:none;">👀 O que você vê?</button>
+        </div>
       </div>
     </div>
 
@@ -933,6 +969,11 @@
           <input type="date" id="f-birth-date">
         </div>
         <p class="field-hint">Usada só pra calcular a idade do Be em cada conquista. Fica salva pra você e a Nathy verem igual.</p>
+        <div class="field">
+          <label for="f-pollinations-key">Chave de IA do bichinho (opcional)</label>
+          <input type="text" id="f-pollinations-key" placeholder="pk_... (deixe em branco pra usar o modo gratuito)">
+        </div>
+        <p class="field-hint">O bichinho virtual já conversa e escuta de graça, mas o modo gratuito às vezes falha ou fica devagar. Pra voz e IA mais confiáveis, crie uma chave grátis em <strong>enter.pollinations.ai</strong> e cole aqui. Fica salva pra vocês dois usarem.</p>
         <div class="modal-actions">
           <button type="button" class="btn btn-ghost" id="settings-cancel-btn">Fechar</button>
           <button type="submit" class="btn btn-primary">Salvar</button>
@@ -982,6 +1023,7 @@ let selectedBadge = null;
 let selectedFiles = [];
 let existingPhotoUrls = [];
 let babyBirthDate = null;
+let POLLINATIONS_KEY = null;
 let activeBadgeFilter = null;
 let showFavoritesOnly = false;
 let searchQuery = '';
@@ -1225,6 +1267,7 @@ overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModal(); 
 const settingsOverlay = document.getElementById('settings-overlay');
 document.getElementById('settings-btn').addEventListener('click', ()=>{
   document.getElementById('f-birth-date').value = babyBirthDate || '';
+  document.getElementById('f-pollinations-key').value = POLLINATIONS_KEY || '';
   renderThemeSwatches();
   renderWidgetOrderList();
   settingsOverlay.style.display = 'flex';
@@ -1235,17 +1278,19 @@ document.getElementById('settings-form').addEventListener('submit', async (e)=>{
   e.preventDefault();
   if(!isConfigured){ showToast('Configure o Supabase antes.'); return; }
   const val = document.getElementById('f-birth-date').value || null;
-  const { error } = await sb.from('be_config').upsert({ id:1, birth_date: val });
+  const keyVal = document.getElementById('f-pollinations-key').value.trim() || null;
+  const { error } = await sb.from('be_config').upsert({ id:1, birth_date: val, pollinations_key: keyVal });
   if(error){
-    console.error('Erro ao salvar data de nascimento:', error);
-    showToast('Não consegui salvar. Rodou o atualizar-supabase.sql no Supabase?');
+    console.error('Erro ao salvar ajustes:', error);
+    showToast('Não consegui salvar. Rodou o atualizar-supabase-bichinho.sql no Supabase?');
     return;
   }
   babyBirthDate = val;
+  POLLINATIONS_KEY = keyVal;
   renderAgeStat();
   render();
   settingsOverlay.style.display = 'none';
-  showToast('Idade atualizada!');
+  showToast('Ajustes salvos!');
 });
 
 /* ---------- busca ---------- */
@@ -1832,7 +1877,10 @@ async function loadConfig(){
   if(!isConfigured) return;
   try{
     const { data, error } = await sb.from('be_config').select('*').eq('id', 1).maybeSingle();
-    if(!error && data) babyBirthDate = data.birth_date;
+    if(!error && data){
+      babyBirthDate = data.birth_date;
+      POLLINATIONS_KEY = data.pollinations_key || null;
+    }
   }catch(err){
     console.warn('be_config ainda não existe. Rode o atualizar-supabase.sql no Supabase para usar a idade automática.', err);
   }
@@ -1999,7 +2047,7 @@ function showGamesHub(){
 }
 function stopActiveGame(){
   if(activeGame === 'bolhas') stopBubbles();
-  if(activeGame === 'bichinho') stopPetCamera();
+  if(activeGame === 'bichinho') endCall();
   if('speechSynthesis' in window) speechSynthesis.cancel();
   activeGame = null;
 }
@@ -2015,7 +2063,7 @@ function openGame(key){
   if(key === 'pintura'){ setTimeout(setupPaintCanvas, 50); renderPaintPalette(); }
   if(key === 'descobrindo') showDeckCard();
   if(key === 'piano') renderPiano();
-  if(key === 'bichinho'){ renderPetAccessories(); ensureVisionReady(); }
+  if(key === 'bichinho') renderPetAccessories();
   if(key === 'loja') renderShop();
 }
 document.getElementById('games-open-btn').addEventListener('click', ()=> openGames('app'));
@@ -2315,18 +2363,19 @@ function playNote(freq){
   }catch(err){ /* som é só um extra */ }
 }
 
-/* ---------- jogo: bichinho virtual ---------- */
+/* ---------- jogo: bichinho virtual (chamada de vídeo com IA de verdade) ---------- */
 const PET_PHRASES = ['Oi! Eu sou seu amigo!', 'Vamos brincar?', 'Eu gosto muito de você!', 'Você é demais!', 'Tô muito feliz hoje!', 'Uau, que legal!'];
+
+const SYSTEM_PROMPT_PET = 'Você é um bichinho de estimação virtual, fofo, alegre e carinhoso, conversando por chamada de vídeo com uma criança de 2 anos chamada Be (Bernardo). Responda sempre em português do Brasil, com frases bem curtas (no máximo 15 palavras), palavras simples, tom gentil e animado. Fale só sobre coisas do dia a dia de uma criança pequena: animais, cores, números, brincadeiras, família, sentimentos, elogios. Nunca fale sobre temas assustadores, violentos, tristes ou de adultos. Se não entender o que Be disse, responda com carinho e sugira uma brincadeira. Você não substitui um adulto: se parecer que Be precisa de ajuda de verdade, incentive gentilmente a chamar o papai ou a mamãe.';
+const SYSTEM_PROMPT_VISION = 'Você é um bichinho de estimação fofo mostrando pra uma criança de 2 anos, chamada Be, o que ele vê pela câmera. Descreva em português do Brasil, em uma frase bem curta (até 12 palavras), simples e animada, o objeto principal que aparece na foto. Nunca descreva pessoas em detalhes, nem nada assustador.';
+
 let petStream = null;
-document.getElementById('pet-character').addEventListener('click', ()=>{
-  const phrase = PET_PHRASES[Math.floor(Math.random() * PET_PHRASES.length)];
-  document.getElementById('pet-speech').textContent = phrase;
-  const pet = document.getElementById('pet-character');
-  pet.classList.remove('bounce');
-  void pet.offsetWidth;
-  pet.classList.add('bounce');
-  speakPT(phrase);
-});
+let callActive = false;
+let isBusy = false;
+let recognition = null;
+let listening = false;
+let conversationHistory = [];
+
 function renderPetAccessories(){
   const owned = getOwned();
   const emojis = [];
@@ -2334,66 +2383,274 @@ function renderPetAccessories(){
   if(owned.includes('pet_oculos')) emojis.push('🕶️');
   document.getElementById('pet-accessories').textContent = emojis.join(' ');
 }
-function stopPetCamera(){
-  if(petStream){ petStream.getTracks().forEach(t=> t.stop()); petStream = null; }
-  document.getElementById('pet-camera-wrap').style.display = 'none';
-  document.getElementById('pet-camera-btn').textContent = '📷 Mostra pra mim!';
+
+function setCallCaption(text){
+  const el = document.getElementById('call-caption');
+  if(el) el.textContent = text;
 }
-document.getElementById('pet-camera-btn').addEventListener('click', async ()=>{
-  const wrap = document.getElementById('pet-camera-wrap');
-  if(wrap.style.display === 'none'){
-    try{
-      petStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-      document.getElementById('pet-video').srcObject = petStream;
-      wrap.style.display = 'block';
-      document.getElementById('pet-camera-btn').textContent = '🔍 O que é isso?';
-    }catch(err){
-      console.error('Erro ao acessar a câmera:', err);
-      document.getElementById('pet-speech').textContent = 'Não consegui ver pela câmera :(';
-    }
-  } else {
-    identifyFromCamera();
-  }
-});
-async function identifyFromCamera(){
-  const video = document.getElementById('pet-video');
-  const canvas = document.getElementById('pet-capture-canvas');
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  canvas.getContext('2d').drawImage(video, 0, 0);
-
-  const btn = document.getElementById('pet-camera-btn');
+function bouncePet(){
   const pet = document.getElementById('pet-character');
-  const speech = document.getElementById('pet-speech');
-  btn.disabled = true;
-  pet.classList.add('thinking');
-  speech.textContent = 'Deixa eu ver bem direitinho...';
+  pet.classList.remove('bounce');
+  void pet.offsetWidth;
+  pet.classList.add('bounce');
+}
+function setBusyUI(busy){
+  isBusy = busy;
+  document.getElementById('pet-character').classList.toggle('thinking', busy);
+  const talkBtn = document.getElementById('call-talk-btn');
+  const visionBtn = document.getElementById('call-vision-btn');
+  if(talkBtn) talkBtn.disabled = busy;
+  if(visionBtn) visionBtn.disabled = busy;
+}
 
-  const ready = await ensureVisionReady();
-  if(!ready){
-    pet.classList.remove('thinking');
-    btn.disabled = false;
-    speech.textContent = 'Não consegui carregar meus olhos agora. Confere sua internet e tenta de novo!';
-    btn.textContent = '📷 Mostra pra mim de novo!';
+/* fala do bichinho: tenta uma voz de IA realista, se não der usa a voz do navegador */
+async function petSpeak(text){
+  setCallCaption(text);
+  bouncePet();
+  const ok = await speakWithPollinations(text);
+  if(!ok) speakPT(text);
+}
+async function speakWithPollinations(text){
+  try{
+    let audioBlob = null;
+    if(POLLINATIONS_KEY){
+      const res = await fetch('https://gen.pollinations.ai/v1/audio/speech', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + POLLINATIONS_KEY },
+        body: JSON.stringify({ model: 'tts-1', voice: 'nova', input: text, response_format: 'mp3' }),
+      });
+      if(res.ok) audioBlob = await res.blob();
+    }
+    if(!audioBlob){
+      const url = `https://text.pollinations.ai/${encodeURIComponent(text)}?model=openai-audio&voice=nova`;
+      const res = await fetch(url);
+      const ctype = res.headers.get('content-type') || '';
+      if(res.ok && ctype.includes('audio')) audioBlob = await res.blob();
+    }
+    if(!audioBlob) return false;
+    const objectUrl = URL.createObjectURL(audioBlob);
+    const audio = new Audio(objectUrl);
+    audio.addEventListener('ended', ()=> URL.revokeObjectURL(objectUrl));
+    await audio.play();
+    return true;
+  }catch(err){
+    console.warn('Voz de IA indisponível agora, usando a voz do navegador:', err);
+    return false;
+  }
+}
+
+/* conversa: chama a IA de texto (com chave, se houver, senão o modo gratuito) */
+async function pollinationsChat(messages){
+  if(POLLINATIONS_KEY){
+    try{
+      const res = await fetch('https://gen.pollinations.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + POLLINATIONS_KEY },
+        body: JSON.stringify({ model: 'openai', messages, temperature: 0.8 }),
+      });
+      if(res.ok){
+        const data = await res.json();
+        const text = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+        if(text) return text.trim();
+      }
+    }catch(err){ console.warn('Falha na IA com chave, tentando o modo gratuito:', err); }
+  }
+  try{
+    const res = await fetch('https://text.pollinations.ai/openai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'openai', messages, temperature: 0.8 }),
+    });
+    if(res.ok){
+      const data = await res.json();
+      const text = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+      if(text) return text.trim();
+    }
+  }catch(err){ console.warn('Falha no modo gratuito de conversa:', err); }
+  try{
+    const lastUser = [...messages].reverse().find(m=> m.role === 'user');
+    if(lastUser){
+      const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(lastUser.content)}`);
+      const text = (await res.text()).trim();
+      if(text) return text;
+    }
+  }catch(err){ console.warn('Falha no modo gratuito simples:', err); }
+  return null;
+}
+
+/* câmera: liga/desliga a chamada de vídeo */
+function startCall(){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    showToast('Esse navegador não permite usar a câmera aqui.');
     return;
   }
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }).then(stream=>{
+    petStream = stream;
+    document.getElementById('pet-video').srcObject = stream;
+    document.getElementById('call-video-placeholder').style.display = 'none';
+    document.getElementById('call-status').style.display = 'block';
+    document.getElementById('call-toggle-btn').textContent = '🔚 Encerrar chamada';
+    document.getElementById('call-talk-btn').style.display = 'block';
+    document.getElementById('call-vision-btn').style.display = 'block';
+    callActive = true;
+    conversationHistory = [];
+    petSpeak('Oi, Be! Que saudade! Toca no microfone e fala comigo!');
+  }).catch(err=>{
+    console.error('Erro ao acessar a câmera:', err);
+    showToast('Não consegui ligar a câmera. Confere a permissão no navegador.');
+  });
+}
+function endCall(){
+  if(petStream){ petStream.getTracks().forEach(t=> t.stop()); petStream = null; }
+  if(recognition && listening){ try{ recognition.stop(); }catch(err){ /* já parado */ } }
+  listening = false;
+  callActive = false;
+  document.getElementById('pet-video').srcObject = null;
+  document.getElementById('call-video-placeholder').style.display = 'flex';
+  document.getElementById('call-status').style.display = 'none';
+  document.getElementById('call-toggle-btn').textContent = '📞 Iniciar chamada';
+  document.getElementById('call-talk-btn').style.display = 'none';
+  document.getElementById('call-talk-btn').classList.remove('listening');
+  document.getElementById('call-talk-btn').textContent = '🎤 Toque e fale';
+  document.getElementById('call-vision-btn').style.display = 'none';
+  setCallCaption('Toque em "Iniciar chamada" pra falar com o bichinho!');
+}
+document.getElementById('call-toggle-btn').addEventListener('click', ()=>{
+  if(callActive) endCall(); else startCall();
+});
+
+/* escuta: Web Speech API (funciona melhor no Chrome/Android; pode não existir no Safari/iOS) */
+function getRecognition(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) return null;
+  if(recognition) return recognition;
+  recognition = new SR();
+  recognition.lang = 'pt-BR';
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  recognition.onresult = (e)=> handleUserSpeech(e.results[0][0].transcript);
+  recognition.onerror = (e)=>{
+    console.warn('Erro no reconhecimento de voz:', e.error);
+    listening = false;
+    updateTalkBtnUI();
+    if(e.error === 'not-allowed' || e.error === 'service-not-allowed') showToast('Preciso da permissão do microfone pra te ouvir.');
+    else if(e.error !== 'no-speech' && e.error !== 'aborted') showToast('Não consegui ouvir agora, tenta de novo.');
+  };
+  recognition.onend = ()=>{ listening = false; updateTalkBtnUI(); };
+  return recognition;
+}
+function updateTalkBtnUI(){
+  const btn = document.getElementById('call-talk-btn');
+  if(!btn) return;
+  btn.classList.toggle('listening', listening);
+  btn.textContent = listening ? '🔴 Ouvindo...' : '🎤 Toque e fale';
+}
+function toggleTalk(){
+  if(!callActive || isBusy) return;
+  const rec = getRecognition();
+  if(!rec){
+    showToast('Esse navegador ainda não escuta. Tenta no Chrome do Android.');
+    return;
+  }
+  if(listening){ rec.stop(); return; }
+  try{
+    setCallCaption('Ouvindo...');
+    rec.start();
+    listening = true;
+    updateTalkBtnUI();
+  }catch(err){ console.warn('Não consegui iniciar o microfone:', err); }
+}
+document.getElementById('call-talk-btn').addEventListener('click', toggleTalk);
+
+async function handleUserSpeech(transcript){
+  transcript = (transcript || '').trim();
+  if(!transcript) return;
+  setCallCaption('Você disse: ' + transcript);
+  setBusyUI(true);
+  const messages = [
+    { role: 'system', content: SYSTEM_PROMPT_PET },
+    ...conversationHistory,
+    { role: 'user', content: transcript },
+  ];
+  const reply = await pollinationsChat(messages);
+  setBusyUI(false);
+  if(reply){
+    conversationHistory.push({ role: 'user', content: transcript }, { role: 'assistant', content: reply });
+    if(conversationHistory.length > 8) conversationHistory = conversationHistory.slice(-8);
+    await petSpeak(reply);
+    addCoins(1);
+  } else {
+    await petSpeak('Hmm, não pensei em nada agora. Fala de novo?');
+  }
+}
+
+/* visão: descreve o que a câmera está vendo, como numa chamada de vídeo de verdade */
+async function describeView(){
+  if(!callActive || isBusy) return;
+  const video = document.getElementById('pet-video');
+  if(!video.srcObject) return;
+  setBusyUI(true);
+  setCallCaption('Deixa eu ver bem direitinho...');
+
+  const canvas = document.getElementById('pet-capture-canvas');
+  canvas.width = video.videoWidth || 640;
+  canvas.height = video.videoHeight || 480;
+  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 
   let text = null;
-  try{ text = await askVisionLocal(canvas); }
-  catch(err){ console.error('Erro ao identificar a imagem:', err); }
 
-  pet.classList.remove('thinking');
-  btn.disabled = false;
+  if(POLLINATIONS_KEY){
+    try{
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+      const res = await fetch('https://gen.pollinations.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + POLLINATIONS_KEY },
+        body: JSON.stringify({
+          model: 'openai',
+          temperature: 0.6,
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT_VISION },
+            { role: 'user', content: [
+              { type: 'text', text: 'O que você vê nessa foto? Uma frase bem curta e simples.' },
+              { type: 'image_url', image_url: { url: dataUrl } },
+            ] },
+          ],
+        }),
+      });
+      if(res.ok){
+        const data = await res.json();
+        const t = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+        if(t) text = t.trim();
+      }
+    }catch(err){ console.warn('Visão em nuvem indisponível, usando visão local:', err); }
+  }
+
+  if(!text){
+    const ready = await ensureVisionReady();
+    if(ready){
+      try{ text = await askVisionLocal(canvas); }
+      catch(err){ console.error('Erro na visão local:', err); }
+    }
+  }
+
+  setBusyUI(false);
 
   if(text){
-    speech.textContent = text;
-    speakPT(text);
+    await petSpeak(text);
     addCoins(2);
   } else {
-    speech.textContent = 'Hmm, não consegui ver direito. Tenta apontar de novo, com mais luz!';
+    setCallCaption('Hmm, não consegui ver direito. Tenta de novo com mais luz!');
   }
-  btn.textContent = '📷 Mostra pra mim de novo!';
 }
+document.getElementById('call-vision-btn').addEventListener('click', describeView);
+
+/* toque carinhoso no bichinho, funciona mesmo fora da chamada */
+document.getElementById('pet-character').addEventListener('click', ()=>{
+  if(isBusy) return;
+  const phrase = PET_PHRASES[Math.floor(Math.random() * PET_PHRASES.length)];
+  petSpeak(phrase);
+});
 
 /* ---------- visão do bichinho, rodando direto no navegador ---------- */
 let mobilenetModel = null;
@@ -2412,8 +2669,7 @@ function ensureVisionReady(){
   if(visionReadyPromise) return visionReadyPromise;
   visionReadyPromise = (async ()=>{
     try{
-      const speech = document.getElementById('pet-speech');
-      if(speech) speech.textContent = 'Só um instantinho, deixa eu abrir os olhos...';
+      setCallCaption('Só um instantinho, deixa eu abrir os olhos...');
       await loadScriptOnce('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js');
       await loadScriptOnce('https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/dist/mobilenet.min.js');
       mobilenetModel = await mobilenet.load();
